@@ -10,8 +10,12 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessPiece {
+    private ChessGame.TeamColor pieceColor;
+    private ChessPiece.PieceType type;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
+        this.pieceColor = pieceColor;
+        this.type = type;
     }
 
     /**
@@ -30,14 +34,14 @@ public class ChessPiece {
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        throw new RuntimeException("Not implemented");
+        return pieceColor;
     }
 
     /**
      * @return which type of chess piece this piece is
      */
     public PieceType getPieceType() {
-        throw new RuntimeException("Not implemented");
+        return type;
     }
 
     /**
@@ -48,6 +52,56 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        return new ArrayList<>();
+        ArrayList<ChessMove> theMoves = new ArrayList<>();
+        ChessPiece piece = board.getPiece(myPosition);
+        PieceType piecetype = piece.getPieceType();
+        ChessGame.TeamColor pieceColor = piece.getTeamColor();
+        if(piecetype == PieceType.ROOK){
+            theMoves.addAll(RookMove(board, myPosition, pieceColor));
+        }
+        //return new ArrayList<>();
+        //an array list of chessmoves chessmoves being the class that contains the start end and promotion
+        return theMoves;
     }
+//    private ChessMove GetaMove(ChessBoard board, int row, int col){
+//        ChessPiece piece = board.getPiece(new ChessPosition(row,col));
+//
+//    }
+    private Collection<ChessMove> RookMove(ChessBoard board, ChessPosition rookPosition, ChessGame.TeamColor color){
+        ArrayList<ChessMove> rookMoves = new ArrayList<>();
+        int row = rookPosition.getRow();
+        int col = rookPosition.getColumn();
+        //going up
+        for(row = rookPosition.getRow()+1; row <= 8; row++){
+            ChessPiece piece = board.getPiece(new ChessPosition(row,col));
+            if(piece != null && piece.getTeamColor() == color){break;}
+            rookMoves.add(new ChessMove(rookPosition, new ChessPosition(row,col), null));
+            if(piece != null && piece.getTeamColor() != color){break;}
+        }
+        //going down
+        for(row = rookPosition.getRow()-1; row >= 1; row--){
+            ChessPiece piece = board.getPiece(new ChessPosition(row,col));
+            if(piece != null && piece.getTeamColor() == color){break;}
+            rookMoves.add(new ChessMove(rookPosition, new ChessPosition(row,col), null));
+            if(piece != null && piece.getTeamColor() != color){break;}
+        }
+        row = rookPosition.getRow();
+        //going right
+        for(col = rookPosition.getColumn()+1; col <= 8; col++) {
+            ChessPiece piece = board.getPiece(new ChessPosition(row,col));
+            if(piece != null && piece.getTeamColor() == color){break;}
+            rookMoves.add(new ChessMove(rookPosition, new ChessPosition(row,col), null));
+            if(piece != null && piece.getTeamColor() != color){break;}
+        }
+        for(col = rookPosition.getColumn()-1; col >= 1; col--) {
+            ChessPiece piece = board.getPiece(new ChessPosition(row,col));
+            if(piece != null && piece.getTeamColor() == color){break;}
+            rookMoves.add(new ChessMove(rookPosition, new ChessPosition(row,col), null));
+            if(piece != null && piece.getTeamColor() != color){break;}
+        }
+        return rookMoves;
+
+
+    }
+
 }
