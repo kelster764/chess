@@ -63,9 +63,20 @@ public class ChessPiece {
         //an array list of chessmoves chessmoves being the class that contains the start end and promotion
         return theMoves;
     }
-//    private ChessMove GetaMove(ChessBoard board, int row, int col){
-//        ChessPiece piece = board.getPiece(new ChessPosition(row,col));
+    //ChessPiece piece = board.getPiece(new ChessPosition(row,col));
+    //            if(piece != null && piece.getTeamColor() == color){break;}
+    //            rookMoves.add(new ChessMove(rookPosition, new ChessPosition(row,col), null));
+    //            if(piece != null && piece.getTeamColor() != color){break;}
+    //        }
 //
+//    private int GetValid(ChessBoard board, ChessPosition myposition, int row, int col, ChessGame.TeamColor color){
+//        ChessPiece piece = board.getPiece(new ChessPosition(row,col));
+//        if(piece != null && piece.getTeamColor() != color){
+//            return 1;
+//        }
+//        if(piece == null) {
+//            return new ChessMove(myposition, new ChessPosition(row, col), null);
+//        }
 //    }
     private Collection<ChessMove> RookMove(ChessBoard board, ChessPosition rookPosition, ChessGame.TeamColor color){
         ArrayList<ChessMove> rookMoves = new ArrayList<>();
@@ -100,8 +111,11 @@ public class ChessPiece {
             if(piece != null && piece.getTeamColor() != color){break;}
         }
         return rookMoves;
-
-
     }
+//    private Collection<ChessMove> BishopMove(ChessBoard board, ChessPosition bishopPosition, ChessGame.TeamColor color){
+//        int row = bishopPosition.getRow();
+//
+//    }
+
 
 }
