@@ -113,7 +113,21 @@ public class ChessPiece {
         return rookMoves;
     }
 //    private Collection<ChessMove> BishopMove(ChessBoard board, ChessPosition bishopPosition, ChessGame.TeamColor color){
+//        ArrayList<ChessMove> bishopMoves = new ArrayList<>();
 //        int row = bishopPosition.getRow();
+//        int col = bishopPosition.getColumn();
+//        //upright
+//        for(col = bishopPosition.getColumn()+1; col <= 8; col++){
+//            row += 1;
+//            if(row > 8){
+//                row = bishopPosition.getRow();
+//                break;
+//            }
+//            ChessPiece piece = board.getPiece(new ChessPosition(row,col));
+//            if(piece != null && piece.getTeamColor() == color){break;}
+//            bishopMoves.add(new ChessMove(bishopPosition, new ChessPosition(row,col), null));
+//            if(piece != null && piece.getTeamColor() != color){break;}
+//        }
 //
 //    }
 
