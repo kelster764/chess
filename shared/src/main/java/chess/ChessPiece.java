@@ -59,6 +59,9 @@ public class ChessPiece {
         if(piecetype == PieceType.ROOK){
             theMoves.addAll(RookMove(board, myPosition, pieceColor));
         }
+        if(piecetype == PieceType.BISHOP){
+            theMoves.addAll(BishopMove(board, myPosition, pieceColor));
+        }
         //return new ArrayList<>();
         //an array list of chessmoves chessmoves being the class that contains the start end and promotion
         return theMoves;
@@ -78,28 +81,36 @@ public class ChessPiece {
 //            return new ChessMove(myposition, new ChessPosition(row, col), null);
 //        }
 //    }
-    private Collection<ChessMove> RookMove(ChessBoard board, ChessPosition rookPosition, ChessGame.TeamColor color){
+    private Collection<ChessMove> RookMove(ChessBoard board, ChessPosition rookPosition, ChessGame.TeamColor color) {
         ArrayList<ChessMove> rookMoves = new ArrayList<>();
         int[][] directions = {
-                {1,0},
-                {0,-1},{0,1},
+                {1, 0},
+                {0, -1}, {0, 1},
                 {-1, 0}
         };
-        for(int[] direction : directions){
-            for(int i = 1; i <= 8; i++){
+        for (int[] direction : directions) {
+            for (int i = 1; i <= 8; i++) {
                 int x = direction[0] * i;
                 int y = direction[1] * i;
                 int row = rookPosition.getRow() + x;
                 int col = rookPosition.getColumn() + y;
-                if(row > 8 | col > 8 | row < 1 |col < 1){break;}
-                ChessPiece piece = board.getPiece(new ChessPosition(row,col));
-                if(piece != null && piece.getTeamColor() == color){break;}
-                rookMoves.add(new ChessMove(rookPosition, new ChessPosition(row,col), null));
-                if(piece != null && piece.getTeamColor() != color){break;}
+                if (row > 8 | col > 8 | row < 1 | col < 1) {
+                    break;
+                }
+                ChessPiece piece = board.getPiece(new ChessPosition(row, col));
+                if (piece != null && piece.getTeamColor() == color) {
+                    break;
+                }
+                rookMoves.add(new ChessMove(rookPosition, new ChessPosition(row, col), null));
+                if (piece != null && piece.getTeamColor() != color) {
+                    break;
+                }
 
             }
-        }
 
+        }
+        return rookMoves;
+    }
 
 
 //        for(row = rookPosition.getRow()+1; row <= 8; row++){
@@ -129,26 +140,38 @@ public class ChessPiece {
 //            rookMoves.add(new ChessMove(rookPosition, new ChessPosition(row,col), null));
 //            if(piece != null && piece.getTeamColor() != color){break;}
 //        }
-        return rookMoves;
+        //return rookMoves;
+    private Collection<ChessMove> BishopMove(ChessBoard board, ChessPosition bishopPosition, ChessGame.TeamColor color) {
+        ArrayList<ChessMove> bishopMoves = new ArrayList<>();
+        int[][] directions = {
+                //upleft, upright
+                {-1,1},{1,1},
+                //downleft, downright
+                {-1,-1}, {1,-1}
+        };
+        for (int[] direction : directions) {
+            for (int i = 1; i <= 8; i++) {
+                int x = direction[0] * i;
+                int y = direction[1] * i;
+                int row = bishopPosition.getRow() + x;
+                int col = bishopPosition.getColumn() + y;
+                if (row > 8 | col > 8 | row < 1 | col < 1) {
+                    break;
+                }
+                ChessPiece piece = board.getPiece(new ChessPosition(row, col));
+                if (piece != null && piece.getTeamColor() == color) {
+                    break;
+                }
+                bishopMoves.add(new ChessMove(bishopPosition, new ChessPosition(row, col), null));
+                if (piece != null && piece.getTeamColor() != color) {
+                    break;
+                }
+
+            }
+
+        }
+        return bishopMoves;
     }
-//    private Collection<ChessMove> BishopMove(ChessBoard board, ChessPosition bishopPosition, ChessGame.TeamColor color){
-//        ArrayList<ChessMove> bishopMoves = new ArrayList<>();
-//        int row = bishopPosition.getRow();
-//        int col = bishopPosition.getColumn();
-//        //upright
-//        for(col = bishopPosition.getColumn()+1; col <= 8; col++){
-//            row += 1;
-//            if(row > 8){
-//                row = bishopPosition.getRow();
-//                break;
-//            }
-//            ChessPiece piece = board.getPiece(new ChessPosition(row,col));
-//            if(piece != null && piece.getTeamColor() == color){break;}
-//            bishopMoves.add(new ChessMove(bishopPosition, new ChessPosition(row,col), null));
-//            if(piece != null && piece.getTeamColor() != color){break;}
-//        }
-//
-//    }
 
 
 }
