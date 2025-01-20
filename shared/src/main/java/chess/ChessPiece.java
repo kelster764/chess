@@ -62,17 +62,17 @@ public class ChessPiece {
             theMoves.addAll(rookMove(board, myPosition, pieceColor));
         }
         if (piecetype == PieceType.BISHOP) {
-            theMoves.addAll(BishopMove(board, myPosition, pieceColor));
+            theMoves.addAll(bishopMove(board, myPosition, pieceColor));
         }
         if (piecetype == PieceType.QUEEN) {
-            theMoves.addAll(BishopMove(board, myPosition, pieceColor));
+            theMoves.addAll(bishopMove(board, myPosition, pieceColor));
             theMoves.addAll(rookMove(board, myPosition, pieceColor));
         }
         if(piecetype == PieceType.KING) {
-            theMoves.addAll(KingMove(board, myPosition, pieceColor));
+            theMoves.addAll(kingMove(board, myPosition, pieceColor));
         }
         if(piecetype == PieceType.KNIGHT){
-            theMoves.addAll(KnightMove(board, myPosition, pieceColor));
+            theMoves.addAll(knightMove(board, myPosition, pieceColor));
         }
         if(piecetype == PieceType.PAWN){
             theMoves.addAll(pawnMove(board, myPosition, pieceColor));
@@ -138,7 +138,7 @@ public class ChessPiece {
         rookMoves.addAll(rookBishHelper(directions, board, rookPosition, color));
         return rookMoves;
     }
-    private Collection<ChessMove> BishopMove(ChessBoard board, ChessPosition bishopPosition, ChessGame.TeamColor color) {
+    private Collection<ChessMove> bishopMove(ChessBoard board, ChessPosition bishopPosition, ChessGame.TeamColor color) {
         ArrayList<ChessMove> bishopMoves = new ArrayList<>();
         int[][] directions = {
                 //upleft, upright
@@ -149,7 +149,7 @@ public class ChessPiece {
         bishopMoves.addAll(rookBishHelper(directions, board, bishopPosition, color));
         return bishopMoves;
     }
-    private Collection<ChessMove> KingMove(ChessBoard board, ChessPosition kingPosition, ChessGame.TeamColor color) {
+    private Collection<ChessMove> kingMove(ChessBoard board, ChessPosition kingPosition, ChessGame.TeamColor color) {
         ArrayList<ChessMove> kingMoves = new ArrayList<>();
         int[][] directions = {
                 //upleft, up, upright
@@ -162,7 +162,7 @@ public class ChessPiece {
         kingMoves.addAll(kingKnighthelper(directions, board, kingPosition, color));
         return kingMoves;
     }
-    private Collection<ChessMove> KnightMove(ChessBoard board, ChessPosition knightPosition, ChessGame.TeamColor color) {
+    private Collection<ChessMove> knightMove(ChessBoard board, ChessPosition knightPosition, ChessGame.TeamColor color) {
         ArrayList<ChessMove> knightMoves = new ArrayList<>();
         int[][] directions = {
                 //upleft, upright
