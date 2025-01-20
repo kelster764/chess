@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -179,6 +180,15 @@ public class ChessPiece {
         return pawnMoves;
     }
 
+    private Collection<ChessMove> PawnPromotion(ChessPosition pawnPosition, int row, int col){
+        ArrayList<ChessMove> pawnMoves = new ArrayList<>();
+        ArrayList <PieceType> pieceTypes = new ArrayList<>(Arrays.asList(PieceType.QUEEN, PieceType.BISHOP,PieceType.ROOK, PieceType.KNIGHT));
+        for (PieceType pieceType: pieceTypes){
+            pawnMoves.add(new ChessMove(pawnPosition, new ChessPosition(row, col), pieceType));
+        }
+        return pawnMoves;
+    }
+
     private Collection<ChessMove> PawnAdvance(ChessBoard board, ChessPosition pawnPosition, ChessGame.TeamColor color) {
         ArrayList<ChessMove> pawnMoves = new ArrayList<>();
         int row = pawnPosition.getRow();
@@ -191,7 +201,7 @@ public class ChessPiece {
                 pawnMoves.add(new ChessMove(pawnPosition, new ChessPosition(row - 2, col), null));
             }
             if (row == 2 && board.getPiece(new ChessPosition(row - 1, col)) == null) {
-                pawnMoves.add(new ChessMove(pawnPosition, new ChessPosition(row - 1, col), PieceType.QUEEN));
+                pawnMoves.addAll(PawnPromotion(pawnPosition, row-1, col));
             }
         }
         if (color == ChessGame.TeamColor.WHITE) {
@@ -202,7 +212,7 @@ public class ChessPiece {
                 pawnMoves.add(new ChessMove(pawnPosition, new ChessPosition(row + 2, col), null));
             }
             if (row == 7 && board.getPiece(new ChessPosition(row + 1, col)) == null) {
-                pawnMoves.add(new ChessMove(pawnPosition, new ChessPosition(row + 1, col), PieceType.QUEEN));
+                pawnMoves.addAll(PawnPromotion(pawnPosition, row+1, col));
             }
         }
         return pawnMoves;
