@@ -59,14 +59,14 @@ public class ChessPiece {
         PieceType piecetype = piece.getPieceType();
         ChessGame.TeamColor pieceColor = piece.getTeamColor();
         if (piecetype == PieceType.ROOK) {
-            theMoves.addAll(RookMove(board, myPosition, pieceColor));
+            theMoves.addAll(rookMove(board, myPosition, pieceColor));
         }
         if (piecetype == PieceType.BISHOP) {
             theMoves.addAll(BishopMove(board, myPosition, pieceColor));
         }
         if (piecetype == PieceType.QUEEN) {
             theMoves.addAll(BishopMove(board, myPosition, pieceColor));
-            theMoves.addAll(RookMove(board, myPosition, pieceColor));
+            theMoves.addAll(rookMove(board, myPosition, pieceColor));
         }
         if(piecetype == PieceType.KING) {
             theMoves.addAll(KingMove(board, myPosition, pieceColor));
@@ -75,14 +75,14 @@ public class ChessPiece {
             theMoves.addAll(KnightMove(board, myPosition, pieceColor));
         }
         if(piecetype == PieceType.PAWN){
-            theMoves.addAll(PawnMove(board, myPosition, pieceColor));
+            theMoves.addAll(pawnMove(board, myPosition, pieceColor));
         }
         //return new ArrayList<>();
         //an array list of chessmoves chessmoves being the class that contains the start end and promotion
         return theMoves;
     }
 
-    private Collection<ChessMove> RookBishHelper(int[][] directions, ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor color){
+    private Collection<ChessMove> rookBishHelper(int[][] directions, ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor color){
         ArrayList<ChessMove> moves = new ArrayList<>();
         for (int[] direction : directions) {
             for (int i = 1; i <= 8; i++) {
@@ -107,7 +107,7 @@ public class ChessPiece {
         }
         return moves;
     }
-    private Collection<ChessMove> KingKnighthelper(int[][] directions, ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor color){
+    private Collection<ChessMove> kingKnighthelper(int[][] directions, ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor color){
         ArrayList<ChessMove> moves = new ArrayList<>();
         for (int[] direction : directions) {
             int x = direction[0];
@@ -128,14 +128,14 @@ public class ChessPiece {
         return moves;
     }
 
-    private Collection<ChessMove> RookMove(ChessBoard board, ChessPosition rookPosition, ChessGame.TeamColor color) {
+    private Collection<ChessMove> rookMove(ChessBoard board, ChessPosition rookPosition, ChessGame.TeamColor color) {
         ArrayList<ChessMove> rookMoves = new ArrayList<>();
         int[][] directions = {
                 {1, 0},
                 {0, -1}, {0, 1},
                 {-1, 0}
         };
-        rookMoves.addAll(RookBishHelper(directions, board, rookPosition, color));
+        rookMoves.addAll(rookBishHelper(directions, board, rookPosition, color));
         return rookMoves;
     }
     private Collection<ChessMove> BishopMove(ChessBoard board, ChessPosition bishopPosition, ChessGame.TeamColor color) {
@@ -146,7 +146,7 @@ public class ChessPiece {
                 //downleft, downright
                 {-1, -1}, {1, -1}
         };
-        bishopMoves.addAll(RookBishHelper(directions, board, bishopPosition, color));
+        bishopMoves.addAll(rookBishHelper(directions, board, bishopPosition, color));
         return bishopMoves;
     }
     private Collection<ChessMove> KingMove(ChessBoard board, ChessPosition kingPosition, ChessGame.TeamColor color) {
@@ -159,7 +159,7 @@ public class ChessPiece {
                 //downleft, down, downright
                 {-1, -1}, {-1, 0}, {1, -1}
         };
-        kingMoves.addAll(KingKnighthelper(directions, board, kingPosition, color));
+        kingMoves.addAll(kingKnighthelper(directions, board, kingPosition, color));
         return kingMoves;
     }
     private Collection<ChessMove> KnightMove(ChessBoard board, ChessPosition knightPosition, ChessGame.TeamColor color) {
@@ -170,17 +170,17 @@ public class ChessPiece {
                 //downleft, downright
                 {-2, -1}, {-1, -2}, {-2,1},{-1,2}
         };
-        knightMoves.addAll(KingKnighthelper(directions, board, knightPosition, color));
+        knightMoves.addAll(kingKnighthelper(directions, board, knightPosition, color));
         return knightMoves;
     }
-    private Collection<ChessMove> PawnMove(ChessBoard board, ChessPosition pawnPosition, ChessGame.TeamColor color) {
+    private Collection<ChessMove> pawnMove(ChessBoard board, ChessPosition pawnPosition, ChessGame.TeamColor color) {
         ArrayList<ChessMove> pawnMoves = new ArrayList<>();
-        pawnMoves.addAll(PawnAdvance(board, pawnPosition,color ));
+        pawnMoves.addAll(pawnAdvance(board, pawnPosition,color ));
 
         return pawnMoves;
     }
 
-    private Collection<ChessMove> PawnPromotion(ChessPosition pawnPosition, int row, int col){
+    private Collection<ChessMove> pawnPromotion(ChessPosition pawnPosition, int row, int col){
         ArrayList<ChessMove> pawnMoves = new ArrayList<>();
         ArrayList <PieceType> pieceTypes = new ArrayList<>(Arrays.asList(PieceType.QUEEN, PieceType.BISHOP,PieceType.ROOK, PieceType.KNIGHT));
         for (PieceType pieceType: pieceTypes){
@@ -189,7 +189,7 @@ public class ChessPiece {
         return pawnMoves;
     }
 
-    private Collection<ChessMove> PawnCapture(int[][] directions, ChessBoard board, ChessPosition pawnPosition, ChessGame.TeamColor color){
+    private Collection<ChessMove> pawnCapture(int[][] directions, ChessBoard board, ChessPosition pawnPosition, ChessGame.TeamColor color){
         ArrayList<ChessMove> pawnMoves = new ArrayList<>();
         for(int[] direction: directions){
             int x = direction[0];
@@ -208,7 +208,7 @@ public class ChessPiece {
             if((8 == row || 1 == row) && 8 >= col && col >= 1){
                 ChessPiece piece = board.getPiece(new ChessPosition(row, col));
                 if(piece != null && piece.getTeamColor() != color){
-                    pawnMoves.addAll(PawnPromotion(pawnPosition, row, col));
+                    pawnMoves.addAll(pawnPromotion(pawnPosition, row, col));
                 }
 
             }
@@ -216,7 +216,7 @@ public class ChessPiece {
         return pawnMoves;
     }
 
-    private Collection<ChessMove> PawnAdvance(ChessBoard board, ChessPosition pawnPosition, ChessGame.TeamColor color) {
+    private Collection<ChessMove> pawnAdvance(ChessBoard board, ChessPosition pawnPosition, ChessGame.TeamColor color) {
         ArrayList<ChessMove> pawnMoves = new ArrayList<>();
         int row = pawnPosition.getRow();
         int col = pawnPosition.getColumn();
@@ -231,9 +231,9 @@ public class ChessPiece {
                 pawnMoves.add(new ChessMove(pawnPosition, new ChessPosition(row - 2, col), null));
             }
             if (row == 2 && board.getPiece(new ChessPosition(row - 1, col)) == null) {
-                pawnMoves.addAll(PawnPromotion(pawnPosition, row-1, col));
+                pawnMoves.addAll(pawnPromotion(pawnPosition, row-1, col));
             }
-            pawnMoves.addAll(PawnCapture(capturedirect, board, pawnPosition, color));
+            pawnMoves.addAll(pawnCapture(capturedirect, board, pawnPosition, color));
         }
         if (color == ChessGame.TeamColor.WHITE) {
             int [][] capturedirect = {
@@ -246,9 +246,9 @@ public class ChessPiece {
                 pawnMoves.add(new ChessMove(pawnPosition, new ChessPosition(row + 2, col), null));
             }
             if (row == 7 && board.getPiece(new ChessPosition(row + 1, col)) == null) {
-                pawnMoves.addAll(PawnPromotion(pawnPosition, row+1, col));
+                pawnMoves.addAll(pawnPromotion(pawnPosition, row+1, col));
             }
-            pawnMoves.addAll(PawnCapture(capturedirect, board, pawnPosition, color));
+            pawnMoves.addAll(pawnCapture(capturedirect, board, pawnPosition, color));
         }
         return pawnMoves;
     }
