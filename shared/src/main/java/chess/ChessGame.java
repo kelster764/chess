@@ -95,11 +95,14 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPiece piece = board.getPiece(move.getStartPosition());
+        if(piece == null){
+            throw new InvalidMoveException("you can't do that??");
+        }
         ChessPosition endPosition = move.getEndPosition();
         ChessPiece.PieceType type = piece.getPieceType();
         Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
         if(!validMoves.contains(move)){
-            throw InvalidMoveException("");
+            throw new InvalidMoveException("you can't do that??");
         }
         if(move.getPromotionPiece() != null){
             type = move.getPromotionPiece();
