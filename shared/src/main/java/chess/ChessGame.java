@@ -15,6 +15,7 @@ public class ChessGame {
 
     public ChessGame() {
         board = new ChessBoard();
+        board.resetBoard();
         this.color = TeamColor.WHITE;
 
     }
@@ -32,12 +33,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        if (team == TeamColor.BLACK){
-            color = TeamColor.WHITE;
-        }
-        if(team == TeamColor.WHITE){
-            color = TeamColor.BLACK;
-        }
+        color = team;
     }
 
     /**
@@ -98,6 +94,9 @@ public class ChessGame {
         if(piece == null){
             throw new InvalidMoveException("you can't do that??");
         }
+        if(piece.getTeamColor() != this.color){
+            throw new InvalidMoveException("yo mama");
+        }
         ChessPosition endPosition = move.getEndPosition();
         ChessPiece.PieceType type = piece.getPieceType();
         Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
@@ -109,6 +108,7 @@ public class ChessGame {
         }
         board.addPiece(endPosition, new ChessPiece(piece.getTeamColor(), type));
         board.addPiece(move.getStartPosition(), null);
+        this.color = getOppositeColor(piece.getTeamColor());
     }
 
     /**
@@ -192,7 +192,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        this.board.resetBoard();
+        this.board = board;
     }
 
     /**
