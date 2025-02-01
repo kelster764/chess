@@ -126,14 +126,15 @@ public class ChessGame {
                 ChessPosition myPosition =  new ChessPosition(row, col);
                 ChessPiece piece = board.getPiece(myPosition);
                 //TeamColor oppcolor = getOppositeColor(teamColor));
-                if (piece != null && piece.getTeamColor() == getOppositeColor(teamColor)){
-                    Collection<ChessMove> theMoves = piece.pieceMoves(board, myPosition);
-                    for(ChessMove move: theMoves){
-                        ChessPosition endPosition = move.getEndPosition();
-                        ChessPiece endpiece = board.getPiece(endPosition);
-                        if(endpiece!= null &&  endpiece.getTeamColor() == teamColor && endpiece.getPieceType() == ChessPiece.PieceType.KING){
-                            return true;
-                        }
+                Collection<ChessMove> theMoves = new ArrayList<>();
+                if (piece != null && piece.getTeamColor() == getOppositeColor(teamColor)) {
+                    theMoves.addAll(piece.pieceMoves(board, myPosition));
+                }
+                for(ChessMove move: theMoves){
+                    ChessPosition endPosition = move.getEndPosition();
+                    ChessPiece endpiece = board.getPiece(endPosition);
+                    if(endpiece!= null &&  endpiece.getTeamColor() == teamColor && endpiece.getPieceType() == ChessPiece.PieceType.KING){
+                        return true;
                     }
                 }
             }
