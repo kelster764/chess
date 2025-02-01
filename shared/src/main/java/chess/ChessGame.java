@@ -149,7 +149,8 @@ public class ChessGame {
      * @param teamColor which team to check for checkmate
      * @return True if the specified team is in checkmate
      */
-    public boolean isInCheckmate(TeamColor teamColor) {
+
+    public Collection<ChessMove> checkAndStalematehelp(TeamColor teamColor){
         ArrayList<ChessMove> validmoves = new ArrayList<>();
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
@@ -161,6 +162,12 @@ public class ChessGame {
                 }
             }
         }
+        return validmoves;
+    }
+
+    public boolean isInCheckmate(TeamColor teamColor) {
+        ArrayList<ChessMove> validmoves = new ArrayList<>();
+        validmoves.addAll(checkAndStalematehelp(teamColor));
         return isInCheck(teamColor) && validmoves.isEmpty();
     }
 
@@ -173,16 +180,7 @@ public class ChessGame {
      */
     public boolean isInStalemate(TeamColor teamColor) {
         ArrayList<ChessMove> validmoves = new ArrayList<>();
-        for (int row = 1; row <= 8; row++) {
-            for (int col = 1; col <= 8; col++) {
-                ChessPosition myPosition = new ChessPosition(row, col);
-                ChessPiece piece = board.getPiece(myPosition);
-                //TeamColor oppcolor = getOppositeColor(teamColor));
-                if (piece != null && piece.getTeamColor() == teamColor) {
-                    validmoves.addAll(validMoves(new ChessPosition(row, col)));
-                }
-            }
-        }
+        validmoves.addAll(checkAndStalematehelp(teamColor));
         return !isInCheck(teamColor) && validmoves.isEmpty();
     }
 
