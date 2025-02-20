@@ -14,15 +14,17 @@ public class MemoryUserAccess implements UserDAO {
     final private HashMap<String, UserData> users = new HashMap<>();
 
     public UserData getUser(String username){
-        users.get(username);
+        return users.get(username);
     }
 
     public UserData createUser(UserData user) {
-        if 
-        users.put(user.username(), user);
+        if(! users.containsKey(user.username())){
+            users.put(user.username(), user);
+        }
+
         return user;
     }
-    public Collection<GameData> listGames(){
-        return chessGames.values();
+    public void clearUser() {
+        users.clear();
     }
 }
