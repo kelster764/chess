@@ -1,8 +1,10 @@
 package server;
 
-import dataaccess.DataAccess;
-import dataaccess.DataAccessException;
-import dataaccess.MemoryDataAccess;
+import dataaccess.*;
+//import dataaccess.MemoryDataAccess;
+import dataaccess.MemoryGameDao;
+import dataaccess.MemoryAuthAccess;
+import dataaccess.MemoryUserAccess;
 import service.ClearService;
 import spark.*;
 
@@ -11,12 +13,18 @@ public class Server {
 //    private final registerService;
 //    private final joinGameService;
     private final ClearService clearService;
-    private final DataAccess dataAccess;
+    private final GameDAO gameDao;
+    private final AuthDAO authDao;
+    private final UserDAO userDao;
+    //private final DataAccess dataAccess;
     //private final WebSocketHandler webSocketHandler;
 
     public Server() {
-        this.dataAccess = new MemoryDataAccess();
-        this.clearService = new ClearService(dataAccess);
+        //this.dataAccess = new MemoryDataAccess();
+        this.gameDao = new MemoryGameDao();
+        this.authDao = new MemoryAuthAccess();
+        this.userDao = new MemoryUserAccess();
+        this.clearService = new ClearService(gameDao, authDao, userDao);
 //        this.LoginService = loginService;
 //        this.RegisterService = registerService;
 //        this.JoinGameService = joinGameService;

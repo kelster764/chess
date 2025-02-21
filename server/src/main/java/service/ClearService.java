@@ -1,14 +1,32 @@
 package service;
 
-import dataaccess.DataAccess;
+import dataaccess.GameDAO;
+import dataaccess.AuthDAO;
+import dataaccess.UserDAO;
 import dataaccess.DataAccessException;
 
+//public class ClearService {
+//    private final DataAccess dataAccess;
+//    public ClearService(DataAccess dataAccess){
+//        this.dataAccess = dataAccess;
+//    }
+//    public void clear() throws DataAccessException {
+//        dataAccess.clear();
+//    }
+//}
+
 public class ClearService {
-    private final DataAccess dataAccess;
-    public ClearService(DataAccess dataAccess){
-        this.dataAccess = dataAccess;
+    private final GameDAO gameDao;
+    private final AuthDAO authDao;
+    private final UserDAO userDao;
+    public ClearService(GameDAO gameDao, AuthDAO authDao, UserDAO userDao){
+        this.gameDao = gameDao;
+        this.authDao = authDao;
+        this.userDao = userDao;
     }
     public void clear() throws DataAccessException {
-        dataAccess.clear();
+        gameDao.clearGames();
+        authDao.clearAuth();
+        userDao.clearUser();
     }
 }

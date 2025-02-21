@@ -14,7 +14,7 @@ public class MemoryGameDao implements GameDAO {
     private int nextId = 1;
     final private HashMap<Integer, GameData> chessGames = new HashMap<>();
 
-    public GameData createUser(GameData game) {
+    public GameData createGame(GameData game) {
         game = new GameData(nextId++ , game.whiteUsername(), game.blackUsername(), game.gameName(), game.game());
         //int id = nextId ++;
         chessGames.put(game.gameID(), game);
