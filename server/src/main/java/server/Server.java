@@ -131,7 +131,7 @@ public class Server {
     }
 
     private Object logout(Request req, Response res) throws DataAccessException {
-        String auth = req.body();
+        String auth = req.headers("Authorization");
         //UserData jauth = new Gson().fromJson(auth);
         try {
             logoutService.LogoutUser(auth);
