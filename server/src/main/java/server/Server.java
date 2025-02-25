@@ -9,6 +9,7 @@ import dataaccess.MemoryUserAccess;
 //import model.AuthData;
 import model.*;
 import service.ClearService;
+import service.LoginService;
 import service.RegisterService;
 import spark.*;
 
@@ -19,6 +20,7 @@ public class Server {
     //private final UserData userData;
     private final ClearService clearService;
     private final RegisterService registerService;
+    private final LoginService loginService;
     private final GameDAO gameDao;
     private final AuthDAO authDao;
     private final UserDAO userDao;
@@ -33,6 +35,7 @@ public class Server {
         this.userDao = new MemoryUserAccess();
         this.clearService = new ClearService(gameDao, authDao, userDao);
         this.registerService = new RegisterService(authDao, userDao);
+        this.loginService = new LoginService(authDao, userDao);
 //        this.LoginService = loginService;
 //        this.RegisterService = registerService;
 //        this.JoinGameService = joinGameService;
@@ -48,6 +51,8 @@ public class Server {
         Spark.delete("/db", this::clear);
 
         Spark.post("/user", this::register);
+
+        Spark.post("/session", this::login);
 
         // Register your endpoints and handle exceptions here.
 
@@ -101,6 +106,26 @@ public class Server {
 //        res.status(200);
 //
 //        return jauth;
+    }
+
+    private Object login(Request req, Response res) throws DataAccessException {
+        String body = req.body();
+        UserData jbody = new Gson().fromJson(body, UserData.class);
+        try {
+            AuthData authdata = loginService.LoginUser(jbody);
+            String jauth = new Gson().toJson(authdata);
+            res.status(200);
+            return jauth;
+        } catch (Exception ex) {
+            if (ex.getMessage().equals("Error: unauthorized")) {
+                res.status(401);
+            }
+            else{
+                res.status(500);
+            }
+            res.body(ex.getMessage());
+            return new Gson().toJson(ex.getMessage());
+        }
     }
 
 }
