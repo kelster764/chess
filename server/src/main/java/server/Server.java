@@ -11,6 +11,8 @@ import model.*;
 import service.*;
 import spark.*;
 
+import java.util.Map;
+
 public class Server {
 //    private final loginService;
 //    private final registerService;
@@ -165,8 +167,8 @@ public class Server {
         String body = req.body();
         GameData jbody = new Gson().fromJson(body, GameData.class);
         try {
-            int gameID = addGameService.addGame(auth, jbody);
-            String jgameID = new Gson().toJson(gameID);
+            GameData game = addGameService.addGame(auth, jbody);
+            String jgameID = new Gson().toJson(Map.of("gameID", game.gameID()));
             res.status(200);
             return jgameID;
         } catch (Exception ex){
