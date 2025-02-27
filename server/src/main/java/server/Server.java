@@ -11,6 +11,7 @@ import model.*;
 import service.*;
 import spark.*;
 
+import java.util.Collection;
 import java.util.Map;
 
 public class Server {
@@ -23,6 +24,7 @@ public class Server {
     private final LoginService loginService;
     private final LogoutService logoutService;
     private final AddGameService addGameService;
+    private final ListGameService listGameService;
     private final GameDAO gameDao;
     private final AuthDAO authDao;
     private final UserDAO userDao;
@@ -40,6 +42,7 @@ public class Server {
         this.loginService = new LoginService(authDao, userDao);
         this.logoutService = new LogoutService(authDao);
         this.addGameService = new AddGameService(authDao, gameDao);
+        this.listGameService = new ListGameService(authDao, gameDao);
 //        this.LoginService = loginService;
 //        this.RegisterService = registerService;
 //        this.JoinGameService = joinGameService;
@@ -60,7 +63,7 @@ public class Server {
 
         Spark.delete("/session", this::logout);
 
-//        Spark.get("/game" this::listgames);
+        Spark.get("/game", this::listgames);
         Spark.post("/game", this::createGame);
 
         // Register your endpoints and handle exceptions here.
@@ -158,9 +161,24 @@ public class Server {
         }
     }
 
-//    private Object listgames(Request req, Response res) throws DataAccessException {
-//        String auth = req.headers("Authorization");
-//    }
+    private Object listgames(Request req, Response res) throws DataAccessException {
+        String auth = req.headers("Authorization");
+        try {
+            Collection<GameData> games = listGameService.listGame(auth);
+            String jgames = new Gson().toJson(games);
+            res.status(200);
+            return jgames;
+        } catch (Exception ex){
+        if (ex.getMessage().equals("Error: unauthorized")) {
+            res.status(401);
+        }
+        else{
+            res.status(500);
+        }
+        res.body(ex.getMessage());
+        return new Gson().toJson(ex.getMessage());
+    }
+    }
 
     private Object createGame(Request req, Response res) throws DataAccessException {
         String auth = req.headers("Authorization");
@@ -172,6 +190,9 @@ public class Server {
             res.status(200);
             return jgameID;
         } catch (Exception ex){
+            if (ex.getMessage().equals("Error: bad request")) {
+                res.status(400);
+            }
             if (ex.getMessage().equals("Error: unauthorized")) {
                 res.status(401);
             }

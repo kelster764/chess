@@ -4,24 +4,24 @@ import dataaccess.*;
 import model.AuthData;
 import model.GameData;
 
-public class AddGameService {
+import java.util.Collection;
+
+public class ListGameService {
     private final AuthDAO authDao;
     private final GameDAO gameDao;
 
-    public AddGameService(AuthDAO authDao, GameDAO gameDao){
+    public ListGameService(AuthDAO authDao, GameDAO gameDao){
         this.authDao = authDao;
         this.gameDao = gameDao;
     }
-    public GameData addGame(String authToken, GameData gameName) throws DataAccessException{
+    public Collection<GameData> listGame(String authToken) throws DataAccessException{
         AuthData authData = authDao.getAuth(authToken);
-        if(gameName == null){
-            throw new DataAccessException("Error: bad request");
-        }
-        else if(authData == null){
+
+        if(authData == null){
             throw new DataAccessException("Error: unauthorized");
         }
-        GameData game = gameDao.createGame(gameName);
+        Collection<GameData> games= gameDao.listGames();
         //int gameID = game.gameID();
-        return game;
+        return games;
     }
 }
