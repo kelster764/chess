@@ -25,6 +25,7 @@ public class Server {
     private final LogoutService logoutService;
     private final AddGameService addGameService;
     private final ListGameService listGameService;
+    private final JoinGameService joinGameService;
     private final GameDAO gameDao;
     private final AuthDAO authDao;
     private final UserDAO userDao;
@@ -43,6 +44,7 @@ public class Server {
         this.logoutService = new LogoutService(authDao);
         this.addGameService = new AddGameService(authDao, gameDao);
         this.listGameService = new ListGameService(authDao, gameDao);
+        this.joinGameService = new JoinGameService(authDao, gameDao);
 //        this.LoginService = loginService;
 //        this.RegisterService = registerService;
 //        this.JoinGameService = joinGameService;
@@ -64,7 +66,10 @@ public class Server {
         Spark.delete("/session", this::logout);
 
         Spark.get("/game", this::listgames);
+
         Spark.post("/game", this::createGame);
+
+        Spark.put("/game", this::joinGame);
 
         // Register your endpoints and handle exceptions here.
 
@@ -201,6 +206,15 @@ public class Server {
             }
             res.body(ex.getMessage());
             return new Gson().toJson(ex.getMessage());
+        }
+    }
+
+    private Object joinGame(Request req, Response res) throws DataAccessException {
+        String auth = req.headers("Authorization");
+        String body = req.body();
+        ColorData jbody = new Gson().fromJson(body, ColorData.class);
+        try{
+            joinGameService.joinGame(auth, jbody);
         }
     }
 
