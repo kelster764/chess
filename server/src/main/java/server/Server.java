@@ -136,6 +136,8 @@ public class Server {
         }
     }
 
+
+
     private Object logout(Request req, Response res) throws DataAccessException {
         String auth = req.headers("Authorization");
         //UserData jauth = new Gson().fromJson(auth);
@@ -151,7 +153,6 @@ public class Server {
             else{
                 res.status(500);
             }
-            res.body(ex.getMessage());
             return new Gson().toJson(Map.of("message", ex.getMessage()));
 
         }
