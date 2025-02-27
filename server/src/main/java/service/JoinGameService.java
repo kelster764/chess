@@ -24,7 +24,7 @@ public class JoinGameService {
         int gameID = colorData.gameID();
         GameData game = gameDao.getGame(gameID);
         String color = colorData.playerColor();
-        if(color == null){
+        if(color == null || (!color.equals("BLACK") && !color.equals("WHITE"))){
             throw new DataAccessException("Error: bad request");
         }
         if(color.equals("WHITE") && game.whiteUsername()!= null) {
@@ -35,10 +35,10 @@ public class JoinGameService {
         }
 
         if(color.equals("WHITE")) {
-            gameDao.updateGame(gameID, authData.userName(), game.blackUsername(), game.gameName(), game.game());
+            gameDao.updateGame(gameID, authData.username(), game.blackUsername(), game.gameName(), game.game());
         }
-        else if(color.equals("BLACK")) {
-            gameDao.updateGame(gameID, game.whiteUsername(), authData.userName(), game.gameName(), game.game());
+        if(color.equals("BLACK")) {
+            gameDao.updateGame(gameID, game.whiteUsername(), authData.username(), game.gameName(), game.game());
         }
     }
 }

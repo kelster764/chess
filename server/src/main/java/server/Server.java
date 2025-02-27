@@ -105,17 +105,17 @@ public class Server {
             if (ex.getMessage().equals("Error: already taken")){
                 res.status(403);
                 res.body(ex.getMessage());
-                return new Gson().toJson(ex.getMessage());
+                return new Gson().toJson(Map.of("message", ex.getMessage()));
             }
             else if(ex.getMessage().equals("Error: bad request")){
                 res.status(400);
                 res.body(ex.getMessage());
-                return new Gson().toJson(ex.getMessage());
+                return new Gson().toJson(Map.of("message", ex.getMessage()));
             }
             else{
                 res.status(500);
                 res.body(ex.getMessage());
-                return new Gson().toJson(ex.getMessage());
+                return new Gson().toJson(Map.of("message", ex.getMessage()));
             }
         }
 
@@ -140,8 +140,8 @@ public class Server {
             else{
                 res.status(500);
             }
-            res.body(ex.getMessage());
-            return new Gson().toJson(ex.getMessage());
+            //res.body(ex.getMessage());
+            return new Gson().toJson(Map.of("message", ex.getMessage()));
         }
     }
 
@@ -161,7 +161,7 @@ public class Server {
                 res.status(500);
             }
             res.body(ex.getMessage());
-            return new Gson().toJson(ex.getMessage());
+            return new Gson().toJson(Map.of("message", ex.getMessage()));
 
         }
     }
@@ -170,7 +170,8 @@ public class Server {
         String auth = req.headers("Authorization");
         try {
             Collection<GameData> games = listGameService.listGame(auth);
-            String jgames = new Gson().toJson(games);
+            String jgames = new Gson().toJson(Map.of("games", games));
+            //String jgames = new Gson().toJson(games);
             res.status(200);
             return jgames;
         } catch (Exception ex){
@@ -181,7 +182,7 @@ public class Server {
             res.status(500);
         }
         res.body(ex.getMessage());
-        return new Gson().toJson(ex.getMessage());
+        return new Gson().toJson(Map.of("message", ex.getMessage()));
     }
     }
 
@@ -205,7 +206,7 @@ public class Server {
                 res.status(500);
             }
             res.body(ex.getMessage());
-            return new Gson().toJson(ex.getMessage());
+            return new Gson().toJson(Map.of("message", ex.getMessage()));
         }
     }
 
@@ -231,7 +232,7 @@ public class Server {
                 res.status(500);
             }
             res.body(ex.getMessage());
-            return new Gson().toJson(ex.getMessage());
+            return new Gson().toJson(Map.of("message", ex.getMessage()));
         }
     }
 }
