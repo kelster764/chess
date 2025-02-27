@@ -23,7 +23,7 @@ public class JoinGameService {
 
         int gameID = colorData.gameID();
         GameData game = gameDao.getGame(gameID);
-        String color = colorData.color();
+        String color = colorData.playerColor();
         if(color == null){
             throw new DataAccessException("Error: bad request");
         }

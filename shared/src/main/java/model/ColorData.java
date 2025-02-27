@@ -1,4 +1,4 @@
 package model;
 
-public record ColorData(String color, int gameID) {
+public record ColorData(String playerColor, int gameID) {
 }
