@@ -11,7 +11,7 @@ import java.util.Collection;
 public interface GameDAO{
     void clearGames() throws DataAccessException;
 
-    GameData createGame(GameData game) throws DataAccessException;
+    GameData createGame(GameData gameName) throws DataAccessException;
 
     GameData getGame(int gameID) throws DataAccessException;
 

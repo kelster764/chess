@@ -11,7 +11,7 @@ import java.util.HashMap;
 //}
 public class MemoryUserAccess implements UserDAO {
     //private int nextId = 1;
-    final private HashMap<String, UserData> users = new HashMap<>();
+    public HashMap<String, UserData> users = new HashMap<>();
 
     public UserData getUser(String username){
         return users.get(username);

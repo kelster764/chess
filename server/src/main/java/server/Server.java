@@ -20,6 +20,7 @@ public class Server {
     private final RegisterService registerService;
     private final LoginService loginService;
     private final LogoutService logoutService;
+    private final AddGameService addGameService;
     private final GameDAO gameDao;
     private final AuthDAO authDao;
     private final UserDAO userDao;
@@ -36,6 +37,7 @@ public class Server {
         this.registerService = new RegisterService(authDao, userDao);
         this.loginService = new LoginService(authDao, userDao);
         this.logoutService = new LogoutService(authDao);
+        this.addGameService = new AddGameService(authDao, gameDao);
 //        this.LoginService = loginService;
 //        this.RegisterService = registerService;
 //        this.JoinGameService = joinGameService;
@@ -55,6 +57,9 @@ public class Server {
         Spark.post("/session", this::login);
 
         Spark.delete("/session", this::logout);
+
+//        Spark.get("/game" this::listgames);
+        Spark.post("/game", this::createGame);
 
         // Register your endpoints and handle exceptions here.
 
@@ -148,6 +153,31 @@ public class Server {
             res.body(ex.getMessage());
             return new Gson().toJson(ex.getMessage());
 
+        }
+    }
+
+//    private Object listgames(Request req, Response res) throws DataAccessException {
+//        String auth = req.headers("Authorization");
+//    }
+
+    private Object createGame(Request req, Response res) throws DataAccessException {
+        String auth = req.headers("Authorization");
+        String body = req.body();
+        GameData jbody = new Gson().fromJson(body, GameData.class);
+        try {
+            int gameID = addGameService.addGame(auth, jbody);
+            String jgameID = new Gson().toJson(gameID);
+            res.status(200);
+            return jgameID;
+        } catch (Exception ex){
+            if (ex.getMessage().equals("Error: unauthorized")) {
+                res.status(401);
+            }
+            else{
+                res.status(500);
+            }
+            res.body(ex.getMessage());
+            return new Gson().toJson(ex.getMessage());
         }
     }
 
