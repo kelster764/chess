@@ -78,6 +78,21 @@ public class Server {
         Spark.awaitStop();
     }
 
+    private void errorUpdate(String message, Response res) {
+        if(message.equals("Error: bad request")){
+            res.status(400);
+        }
+        else if (message.equals("Error: unauthorized")) {
+            res.status(401);
+        }
+        else if (message.equals("Error: already taken")) {
+            res.status(403);
+        }
+        else {
+            res.status(500);
+        }
+    }
+
     private Object clear(Request req, Response res) throws DataAccessException {
         //service.deleteAllPets();
         clearService.clear();
@@ -94,27 +109,9 @@ public class Server {
             res.status(200);
             return jauth;
         } catch(Exception ex){
-            if (ex.getMessage().equals("Error: already taken")){
-                res.status(403);
-                res.body(ex.getMessage());
-                return new Gson().toJson(Map.of("message", ex.getMessage()));
-            }
-            else if(ex.getMessage().equals("Error: bad request")){
-                res.status(400);
-                res.body(ex.getMessage());
-                return new Gson().toJson(Map.of("message", ex.getMessage()));
-            }
-            else{
-                res.status(500);
-                res.body(ex.getMessage());
-                return new Gson().toJson(Map.of("message", ex.getMessage()));
-            }
+            errorUpdate(ex.getMessage(), res);
+            return new Gson().toJson(Map.of("message", ex.getMessage()));
         }
-
-            //{ "username":"", "password":"", "email":"" }
-//        res.status(200);
-//
-//        return jauth;
     }
 
     private Object login(Request req, Response res) throws DataAccessException {
@@ -126,12 +123,7 @@ public class Server {
             res.status(200);
             return jauth;
         } catch (Exception ex) {
-            if (ex.getMessage().equals("Error: unauthorized")) {
-                res.status(401);
-            }
-            else{
-                res.status(500);
-            }
+            errorUpdate(ex.getMessage(), res);
             return new Gson().toJson(Map.of("message", ex.getMessage()));
         }
     }
@@ -147,14 +139,8 @@ public class Server {
             res.status(200);
             return "{}";
         } catch (Exception ex) {
-            if (ex.getMessage().equals("Error: unauthorized")) {
-                res.status(401);
-            }
-            else{
-                res.status(500);
-            }
+            errorUpdate(ex.getMessage(), res);
             return new Gson().toJson(Map.of("message", ex.getMessage()));
-
         }
     }
 
@@ -166,16 +152,10 @@ public class Server {
             //String jgames = new Gson().toJson(games);
             res.status(200);
             return jgames;
-        } catch (Exception ex){
-        if (ex.getMessage().equals("Error: unauthorized")) {
-            res.status(401);
+        } catch (Exception ex) {
+            errorUpdate(ex.getMessage(), res);
+            return new Gson().toJson(Map.of("message", ex.getMessage()));
         }
-        else{
-            res.status(500);
-        }
-        res.body(ex.getMessage());
-        return new Gson().toJson(Map.of("message", ex.getMessage()));
-    }
     }
 
     private Object createGame(Request req, Response res) throws DataAccessException {
@@ -188,16 +168,7 @@ public class Server {
             res.status(200);
             return jgameID;
         } catch (Exception ex){
-            if (ex.getMessage().equals("Error: bad request")) {
-                res.status(400);
-            }
-            if (ex.getMessage().equals("Error: unauthorized")) {
-                res.status(401);
-            }
-            else{
-                res.status(500);
-            }
-            res.body(ex.getMessage());
+            errorUpdate(ex.getMessage(), res);
             return new Gson().toJson(Map.of("message", ex.getMessage()));
         }
     }
@@ -211,19 +182,7 @@ public class Server {
             res.status(200);
             return "{}";
         } catch (Exception ex){
-            if (ex.getMessage().equals("Error: bad request")) {
-                res.status(400);
-            }
-            else if (ex.getMessage().equals("Error: unauthorized")) {
-                res.status(401);
-            }
-            else if (ex.getMessage().equals("Error: already taken")) {
-                res.status(403);
-            }
-            else{
-                res.status(500);
-            }
-            res.body(ex.getMessage());
+            errorUpdate(ex.getMessage(), res);
             return new Gson().toJson(Map.of("message", ex.getMessage()));
         }
     }
