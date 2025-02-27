@@ -215,7 +215,23 @@ public class Server {
         ColorData jbody = new Gson().fromJson(body, ColorData.class);
         try{
             joinGameService.joinGame(auth, jbody);
+            res.status(200);
+            return "{}";
+        } catch (Exception ex){
+            if (ex.getMessage().equals("Error: bad request")) {
+                res.status(400);
+            }
+            else if (ex.getMessage().equals("Error: unauthorized")) {
+                res.status(401);
+            }
+            else if (ex.getMessage().equals("Error: already taken")) {
+                res.status(403);
+            }
+            else{
+                res.status(500);
+            }
+            res.body(ex.getMessage());
+            return new Gson().toJson(ex.getMessage());
         }
     }
-
 }
