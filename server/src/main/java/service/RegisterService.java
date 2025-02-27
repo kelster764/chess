@@ -1,7 +1,6 @@
 package service;
 
 import dataaccess.AuthDAO;
-import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import dataaccess.DataAccessException;
 import model.*;
@@ -14,7 +13,7 @@ public class RegisterService  {
         this.authDao = authDao;
         this.userDao = userDao;
     }
-    public AuthData RegisterUser(UserData userData) throws DataAccessException {
+    public AuthData registerUser(UserData userData) throws DataAccessException {
         if (userDao.getUser(userData.username()) != null) {
                 throw new DataAccessException("Error: already taken") ;
         }

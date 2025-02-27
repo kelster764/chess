@@ -1,7 +1,6 @@
 package service;
 
 import dataaccess.AuthDAO;
-import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 import model.AuthData;
@@ -15,7 +14,7 @@ public class LoginService {
         this.authDao = authDao;
         this.userDao = userDao;
     }
-    public AuthData LoginUser(UserData userData) throws DataAccessException {
+    public AuthData loginUser(UserData userData) throws DataAccessException {
         UserData user = userDao.getUser(userData.username());
         if (user == null) {
             throw new DataAccessException("Error: unauthorized");

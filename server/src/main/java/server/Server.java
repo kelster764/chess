@@ -15,10 +15,7 @@ import java.util.Collection;
 import java.util.Map;
 
 public class Server {
-//    private final loginService;
-//    private final registerService;
-//    private final joinGameService;
-    //private final UserData userData;
+
     private final ClearService clearService;
     private final RegisterService registerService;
     private final LoginService loginService;
@@ -29,8 +26,7 @@ public class Server {
     private final GameDAO gameDao;
     private final AuthDAO authDao;
     private final UserDAO userDao;
-    //private final DataAccess dataAccess;
-    //private final WebSocketHandler webSocketHandler;
+
 
     public Server() {
         //this.dataAccess =
@@ -45,10 +41,6 @@ public class Server {
         this.addGameService = new AddGameService(authDao, gameDao);
         this.listGameService = new ListGameService(authDao, gameDao);
         this.joinGameService = new JoinGameService(authDao, gameDao);
-//        this.LoginService = loginService;
-//        this.RegisterService = registerService;
-//        this.JoinGameService = joinGameService;
-        //webSocketHandler = new WebSocketHandler();
     }
 
 
@@ -97,7 +89,7 @@ public class Server {
         String body = req.body();
         UserData jbody = new Gson().fromJson(body, UserData.class);
         try {
-            AuthData authdata = registerService.RegisterUser(jbody);
+            AuthData authdata = registerService.registerUser(jbody);
             String jauth = new Gson().toJson(authdata);
             res.status(200);
             return jauth;
@@ -129,7 +121,7 @@ public class Server {
         String body = req.body();
         UserData jbody = new Gson().fromJson(body, UserData.class);
         try {
-            AuthData authdata = loginService.LoginUser(jbody);
+            AuthData authdata = loginService.loginUser(jbody);
             String jauth = new Gson().toJson(authdata);
             res.status(200);
             return jauth;
@@ -140,7 +132,6 @@ public class Server {
             else{
                 res.status(500);
             }
-            //res.body(ex.getMessage());
             return new Gson().toJson(Map.of("message", ex.getMessage()));
         }
     }
@@ -149,7 +140,7 @@ public class Server {
         String auth = req.headers("Authorization");
         //UserData jauth = new Gson().fromJson(auth);
         try {
-            logoutService.LogoutUser(auth);
+            logoutService.logoutUser(auth);
             //String jauth = new Gson().toJson(authdata);
             res.status(200);
             return "{}";
