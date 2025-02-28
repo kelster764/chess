@@ -138,6 +138,20 @@ public class ClearTest {
         }
 
     }
+    @Test
+    public void registerTest(){
+        Assertions.assertTrue(userAccess.users.isEmpty());
+        Assertions.assertTrue(gameAccess.chessGames.isEmpty());
+        Assertions.assertTrue(authAccess.authentications.isEmpty());
+        try{
+            registerService.registerUser(userData);
+            Assertions.assertFalse(userAccess.users.isEmpty());
+        }catch(Exception ex){
+            Assertions.fail();
+        }
+
+
+    }
 
 
 
