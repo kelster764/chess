@@ -154,6 +154,19 @@ public class UnitTests {
 
     }
     @Test
+    public void registerTestFail(){
+        Assertions.assertTrue(userAccess.users.isEmpty());
+        Assertions.assertTrue(gameAccess.chessGames.isEmpty());
+        Assertions.assertTrue(authAccess.authentications.isEmpty());
+        try{
+            registerService.registerUser(new UserData("your mom", null, "isgot@gmail.com"));
+            Assertions.fail();
+        }catch(Exception ex){
+            Assertions.assertInstanceOf(DataAccessException.class, ex);
+        }
+
+    }
+    @Test
     public void loginTest(){
         Assertions.assertTrue(userAccess.users.isEmpty());
         userAccess.createUser(userData);
@@ -198,6 +211,22 @@ public class UnitTests {
             Assertions.fail();
         }
     }
+    @Test
+    public void logOutFail(){
+        Assertions.assertTrue(userAccess.users.isEmpty());
+        Assertions.assertTrue(authAccess.authentications.isEmpty());
+        UserData userData1 = new UserData(userName, password, email);
+        userAccess.createUser(userData1);
+        AuthData auth = authAccess.createAuth(userName);
+        try{
+            Assertions.assertFalse(authAccess.authentications.isEmpty());
+            logoutService.logoutUser(null);
+            Assertions.fail();
+        }catch(Exception ex){
+            Assertions.assertInstanceOf(DataAccessException.class, ex);
+        }
+    }
+
 
 
 
