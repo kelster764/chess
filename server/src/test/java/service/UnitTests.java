@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Collection;
 
 public class UnitTests {
-    private static final Logger log = LoggerFactory.getLogger(UnitTests.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UnitTests.class);
     MemoryAuthAccess authAccess = new MemoryAuthAccess();
     MemoryGameDao  gameAccess = new MemoryGameDao();
     MemoryUserAccess userAccess = new MemoryUserAccess();
@@ -154,7 +154,7 @@ public class UnitTests {
 
     }
     @Test
-    public void LoginTest(){
+    public void loginTest(){
         Assertions.assertTrue(userAccess.users.isEmpty());
         userAccess.createUser(userData);
         AuthData auth = authAccess.createAuth(userName);
@@ -167,7 +167,7 @@ public class UnitTests {
 
     }
     @Test
-    public void LoginTestFail(){
+    public void loginTestFail(){
 
         Assertions.assertTrue(userAccess.users.isEmpty());
         UserData userData1 = new UserData(userName, password, email);
@@ -184,7 +184,7 @@ public class UnitTests {
     }
 
     @Test
-    public void LogOut(){
+    public void logOut(){
         Assertions.assertTrue(userAccess.users.isEmpty());
         Assertions.assertTrue(authAccess.authentications.isEmpty());
         UserData userData1 = new UserData(userName, password, email);
