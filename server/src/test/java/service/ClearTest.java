@@ -20,7 +20,7 @@ public class ClearTest {
     RegisterService registerService = new RegisterService(authAccess, userAccess);
     //loginService loginService = new LoginService(authDao, userDao);
 //        this.logoutService = new LogoutService(authDao);
-//        this.addGameService = new AddGameService(authDao, gameDao);
+    AddGameService addGameService = new AddGameService(authAccess, gameAccess);
     ListGameService listGameService = new ListGameService(authAccess, gameAccess);
 //        this.joinGameService = new JoinGameService(authDao, gameDao);
 
@@ -79,5 +79,29 @@ public class ClearTest {
             Assertions.assertInstanceOf(DataAccessException.class, ex);
         }
     }
+    @Test
+    public void addGameService(){
+        Assertions.assertTrue(gameAccess.chessGames.isEmpty());
+        AuthData auth = authAccess.createAuth(userName);
+        try {
+            addGameService.addGame(auth.authToken(), gameData);
+        }catch(Exception ex){
+            Assertions.fail();
+        }
+
+    }
+    @Test
+    public void addGameServiceFail(){
+        Assertions.assertTrue(gameAccess.chessGames.isEmpty());
+        AuthData auth = authAccess.createAuth(userName);
+        try {
+            addGameService.addGame("wrong token", gameData);
+            Assertions.fail();
+        }catch(Exception ex){
+            Assertions.assertInstanceOf(DataAccessException.class, ex);
+        }
+
+    }
+
 
 }
