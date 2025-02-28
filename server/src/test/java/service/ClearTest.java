@@ -22,7 +22,7 @@ public class ClearTest {
 //        this.logoutService = new LogoutService(authDao);
     AddGameService addGameService = new AddGameService(authAccess, gameAccess);
     ListGameService listGameService = new ListGameService(authAccess, gameAccess);
-//        this.joinGameService = new JoinGameService(authDao, gameDao);
+    JoinGameService joinGameService = new JoinGameService(authAccess, gameAccess);
 
     //AuthData authData = new RegisterService.
     String userName = "yomama";
@@ -102,6 +102,44 @@ public class ClearTest {
         }
 
     }
+    @Test
+    public void joinGameService(){
+        Assertions.assertTrue(gameAccess.chessGames.isEmpty());
+        GameData gameData2 = new GameData(1, null, "Yourmom", "thegame", game);
+        gameAccess.createGame(gameData2);
+        AuthData auth = authAccess.createAuth(userName);
+        ColorData color = new ColorData("WHITE", 1);
+        try {
+            joinGameService.joinGame(auth.authToken(), color);
+            GameData answer = gameAccess.getGame(1);
+            GameData expected = new GameData(1,"yomama" , "Yourmom", "thegame", game);
+            Assertions.assertEquals(answer, expected);
+        }catch(Exception ex){
+            Assertions.fail();
+            //Assertions.assertInstanceOf(DataAccessException.class, ex);
+        }
+
+    }
+    @Test
+    public void joinGameServiceFail(){
+        Assertions.assertTrue(gameAccess.chessGames.isEmpty());
+        GameData gameData2 = new GameData(1, null, "Yourmom", "thegame", game);
+        gameAccess.createGame(gameData2);
+        AuthData auth = authAccess.createAuth(userName);
+        ColorData color = new ColorData("BLUE", 1);
+        try {
+            joinGameService.joinGame(auth.authToken(), color);
+            Assertions.fail();
+            GameData answer = gameAccess.getGame(1);
+            GameData expected = new GameData(1,"yomama" , "Yourmom", "thegame", game);
+
+        }catch(Exception ex){
+            Assertions.assertInstanceOf(DataAccessException.class, ex);
+        }
+
+    }
+
+
 
 
 }
