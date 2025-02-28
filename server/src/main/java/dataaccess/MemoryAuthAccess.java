@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public class MemoryAuthAccess implements AuthDAO{;
-    final private HashMap<String, AuthData> authentications = new HashMap<>();
+    public HashMap<String, AuthData> authentications = new HashMap<>();
 
     public static String generateToken() {
         return UUID.randomUUID().toString();

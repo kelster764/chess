@@ -12,7 +12,7 @@ import java.util.UUID;
 //}
 public class MemoryGameDao implements GameDAO {
     private int nextId = 1;
-    final private HashMap<Integer, GameData> chessGames = new HashMap<>();
+    public HashMap<Integer, GameData> chessGames = new HashMap<>();
 
     public GameData createGame(GameData game) {
         game = new GameData(nextId++ , game.whiteUsername(), game.blackUsername(), game.gameName(), game.game());
