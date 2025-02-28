@@ -3,23 +3,25 @@ import chess.ChessGame;
 import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.DisplayName;
-import service.*;
 import dataaccess.*;
 import model.*;
 import org.junit.jupiter.api.*;
 
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 
-public class ClearTest {
+public class UnitTests {
+    private static final Logger log = LoggerFactory.getLogger(UnitTests.class);
     MemoryAuthAccess authAccess = new MemoryAuthAccess();
     MemoryGameDao  gameAccess = new MemoryGameDao();
     MemoryUserAccess userAccess = new MemoryUserAccess();
     ClearService clearService = new ClearService(gameAccess, authAccess, userAccess);
     RegisterService registerService = new RegisterService(authAccess, userAccess);
-    //loginService loginService = new LoginService(authDao, userDao);
-//        this.logoutService = new LogoutService(authDao);
+    LoginService loginService = new LoginService(authAccess, userAccess);
+    LogoutService logoutService = new LogoutService(authAccess);
     AddGameService addGameService = new AddGameService(authAccess, gameAccess);
     ListGameService listGameService = new ListGameService(authAccess, gameAccess);
     JoinGameService joinGameService = new JoinGameService(authAccess, gameAccess);
@@ -150,7 +152,51 @@ public class ClearTest {
             Assertions.fail();
         }
 
+    }
+    @Test
+    public void LoginTest(){
+        Assertions.assertTrue(userAccess.users.isEmpty());
+        userAccess.createUser(userData);
+        AuthData auth = authAccess.createAuth(userName);
+        try{
+            loginService.loginUser(userData);
+            //Assertions.assertFalse(userAccess.users.isEmpty());
+        }catch(Exception ex){
+            Assertions.fail();
+        }
 
+    }
+    @Test
+    public void LoginTestFail(){
+
+        Assertions.assertTrue(userAccess.users.isEmpty());
+        UserData userData1 = new UserData(userName, password, email);
+        userAccess.createUser(userData1);
+        AuthData auth = authAccess.createAuth(userName);
+        try{
+            loginService.loginUser( new UserData(userName, "wrongpassword", email));
+            Assertions.fail();
+            //Assertions.assertFalse(userAccess.users.isEmpty());
+        }catch(Exception ex){
+            Assertions.assertInstanceOf(DataAccessException.class, ex);
+        }
+
+    }
+
+    @Test
+    public void LogOut(){
+        Assertions.assertTrue(userAccess.users.isEmpty());
+        Assertions.assertTrue(authAccess.authentications.isEmpty());
+        UserData userData1 = new UserData(userName, password, email);
+        userAccess.createUser(userData1);
+        AuthData auth = authAccess.createAuth(userName);
+        try{
+            Assertions.assertFalse(authAccess.authentications.isEmpty());
+            logoutService.logoutUser(auth.authToken());
+            Assertions.assertTrue(authAccess.authentications.isEmpty());
+        }catch(Exception ex){
+            Assertions.fail();
+        }
     }
 
 
