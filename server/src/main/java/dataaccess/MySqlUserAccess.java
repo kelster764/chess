@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import model.UserData;
 import model.GameData;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,20 +13,44 @@ import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
 
 public class MySqlUserAccess implements UserDAO{
-    public MySqlDataAccess() throws DataAccessException {
+    public MySqlUserAccess() throws DataAccessException {
         configureDatabase();
     }
-    public UserData addUser(UserData userData) throws DataAccessException {
+    public UserData createUser(UserData userData) throws DataAccessException {
         var statement = "INSERT INTO userData (username, password, email, json) VALUES (?, ?, ?)";
         var json = new Gson().toJson(userData);
         executeUpdate(statement, userData.username(), userData.password(), userData.email(), json);
         return new UserData(userData.username(), userData.password(), userData.email());
     }
 
-    public void clear() throws DataAccessException{
+    public void clearUser() throws DataAccessException{
         var statement = "TRUNCATE userData";
         executeUpdate(statement);
     }
+    public UserData getUser(String username) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT id, json FROM userData WHERE username=?";
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.setString(1, username);
+                try (var rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return readUser(rs);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException("bad request");
+        }
+        return null;
+    }
+
+    private UserData readUser(ResultSet rs) throws SQLException {
+        //var username = rs.getString("username");
+        var json = rs.getString("json");
+        var user = new Gson().fromJson(json, UserData.class);
+        return user;
+    }
+
 
     private void executeUpdate(String statement, Object... params) throws DataAccessException{
         try (var conn = DatabaseManager.getConnection()) {
