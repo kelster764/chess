@@ -11,8 +11,11 @@ import model.*;
 import service.*;
 import spark.*;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Map;
+
+//import static dataaccess.DatabaseManager.configureDatabase();
 
 public class Server {
 
@@ -29,11 +32,19 @@ public class Server {
 
 
     public Server() {
+        //    public MySqlUserAccess() throws DataAccessException {
+//        configureDatabase();
+//    }
         //this.dataAccess =
         //this.userData == new UserData()
         this.gameDao = new MemoryGameDao();
         this.authDao = new MemoryAuthAccess();
-        this.userDao = new MemoryUserAccess();
+        try{
+            userDao = new MySqlUserAccess();
+
+        }catch(DataAccessException e) {
+            userDao = new MemoryUserAccess();
+        }
         this.clearService = new ClearService(gameDao, authDao, userDao);
         this.registerService = new RegisterService(authDao, userDao);
         this.loginService = new LoginService(authDao, userDao);

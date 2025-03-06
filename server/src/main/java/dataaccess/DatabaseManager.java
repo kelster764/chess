@@ -69,4 +69,17 @@ public class DatabaseManager {
             throw new DataAccessException(e.getMessage());
         }
     }
+
+//    private void configureDatabase(String[] createStatments) throws DataAccessException {
+//        DatabaseManager.createDatabase();
+//        try (var conn = DatabaseManager.getConnection()) {
+//            for (var statement : createStatments) {
+//                try (var preparedStatement = conn.prepareStatement(statement)) {
+//                    preparedStatement.executeUpdate();
+//                }
+//            }
+//        } catch (SQLException ex) {
+//            throw new DataAccessException("Error: bad request");
+//        }
+//    }
 }

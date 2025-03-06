@@ -13,7 +13,7 @@ import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
 
 public class MySqlUserAccess implements UserDAO{
-    public MySqlUserAccess() throws DataAccessException {
+    public MySqlUserAccess() throws DataAccessException{
         configureDatabase();
     }
     public UserData createUser(UserData userData) throws DataAccessException {
@@ -76,7 +76,7 @@ public class MySqlUserAccess implements UserDAO{
 
 
 
-    private final String[] createStatements = {
+    public final String[] createStatements = {
 
             """
             CREATE TABLE IF NOT EXISTS  userData (
@@ -92,10 +92,10 @@ public class MySqlUserAccess implements UserDAO{
     };
 
 
-    private void configureDatabase() throws DataAccessException {
+    private void configureDatabase(String[] statements) throws DataAccessException {
         DatabaseManager.createDatabase();
         try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : createStatements) {
+            for (var statement : statements) {
                 try (var preparedStatement = conn.prepareStatement(statement)) {
                     preparedStatement.executeUpdate();
                 }
@@ -103,5 +103,9 @@ public class MySqlUserAccess implements UserDAO{
         } catch (SQLException ex) {
             throw new DataAccessException("Error: bad request");
         }
+    }
+
+    private void configureDatabase()throws DataAccessException{
+        configureDatabase(createStatements);
     }
 }
