@@ -17,9 +17,9 @@ public class MySqlUserAccess implements UserDAO{
         configureDatabase();
     }
     public UserData createUser(UserData userData) throws DataAccessException {
-        var statement = "INSERT INTO userData (username, password, email, json) VALUES (?, ?, ?)";
+        var statement = "INSERT INTO userData (username, password, email) VALUES (?, ?, ?)";
         var json = new Gson().toJson(userData);
-        executeUpdate(statement, userData.username(), userData.password(), userData.email(), json);
+        executeUpdate(statement, userData.username(), userData.password(), userData.email());
         return new UserData(userData.username(), userData.password(), userData.email());
     }
 
@@ -39,7 +39,7 @@ public class MySqlUserAccess implements UserDAO{
                 }
             }
         } catch (Exception e) {
-            throw new DataAccessException("bad request");
+            throw new DataAccessException(e.getMessage());
         }
         return null;
     }
@@ -70,7 +70,7 @@ public class MySqlUserAccess implements UserDAO{
 //                return 0;
             }
         } catch (SQLException e) {
-            throw new DataAccessException("bad request");
+            throw new DataAccessException(e.getMessage());
         }
     }
 
@@ -80,13 +80,12 @@ public class MySqlUserAccess implements UserDAO{
 
             """
             CREATE TABLE IF NOT EXISTS  userData (
-               'username' varchar(256) NOT NULL,
-               'password' varchar(256) NOT NULL,
-               'email' varchar(256) NOT NULL,
-               `json` TEXT DEFAULT NULL,
+               `username` varchar(256) NOT NULL,
+               `password` varchar(256) NOT NULL,
+               `email` varchar(256) NOT NULL,
                 PRIMARY KEY (`username`),
-                INDEX('password'),
-                INDEX('email')
+                INDEX(`password`),
+                INDEX(`email`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
     };
@@ -101,7 +100,7 @@ public class MySqlUserAccess implements UserDAO{
                 }
             }
         } catch (SQLException ex) {
-            throw new DataAccessException("Error: bad request");
+            throw new DataAccessException(ex.getMessage());
         }
     }
 

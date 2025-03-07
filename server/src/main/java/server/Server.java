@@ -26,9 +26,9 @@ public class Server {
     private final AddGameService addGameService;
     private final ListGameService listGameService;
     private final JoinGameService joinGameService;
-    private final GameDAO gameDao;
-    private final AuthDAO authDao;
-    private final UserDAO userDao;
+    private GameDAO gameDao;
+    private AuthDAO authDao;
+    private UserDAO userDao;
 
 
     public Server() {
@@ -40,10 +40,9 @@ public class Server {
         this.gameDao = new MemoryGameDao();
         this.authDao = new MemoryAuthAccess();
         try{
-            userDao = new MySqlUserAccess();
-
+            this.userDao = new MySqlUserAccess();
         }catch(DataAccessException e) {
-            userDao = new MemoryUserAccess();
+            this.userDao = new MemoryUserAccess();
         }
         this.clearService = new ClearService(gameDao, authDao, userDao);
         this.registerService = new RegisterService(authDao, userDao);
