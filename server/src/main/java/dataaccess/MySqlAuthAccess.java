@@ -1,6 +1,7 @@
 package dataaccess;
 
 import com.google.gson.Gson;
+import model.AuthData;
 import model.UserData;
 import model.GameData;
 import org.mindrot.jbcrypt.BCrypt;
@@ -9,34 +10,39 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.UUID;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
 
-public class MySqlUserAccess implements UserDAO{
-    public MySqlUserAccess() throws DataAccessException{
+public class MySqlAuthAccess implements AuthDAO {
+    public MySqlAuthAccess() throws DataAccessException {
         configureDatabase();
     }
-    public UserData createUser(UserData userData) throws DataAccessException {
-        var statement = "INSERT INTO userData (username, password, email) VALUES (?, ?, ?)";
-        //var json = new Gson().toJson(userData);
-        String hashedPassword = BCrypt.hashpw(userData.password(), BCrypt.gensalt());
-        executeUpdate(statement, userData.username(), hashedPassword, userData.email());
-        return new UserData(userData.username(), userData.password(), userData.email());
+    public static String generateToken() {
+        return UUID.randomUUID().toString();
     }
 
-    public void clearUser() throws DataAccessException{
-        var statement = "TRUNCATE userData";
+    public AuthData createAuth(String userName) throws DataAccessException {
+        var statement = "INSERT INTO authData (authToken, username) VALUES (?, ?)";
+        String token = generateToken();
+        executeUpdate(statement, token, userName);
+        return new AuthData(token, userName);
+    }
+
+
+    public void clearAuth() throws DataAccessException{
+        var statement = "TRUNCATE authData";
         executeUpdate(statement);
     }
-    public UserData getUser(String username) throws DataAccessException {
+    public AuthData getAuth(String authToken) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT username, password, email FROM userData WHERE username=?";
+            var statement = "SELECT authToken, username FROM authData WHERE authToken=?";
             try (var ps = conn.prepareStatement(statement)) {
-                ps.setString(1, username);
+                ps.setString(1, authToken);
                 try (var rs = ps.executeQuery()) {
                     if (rs.next()) {
-                        return readUser(rs);
+                        return readAuth(rs);
                     }
                 }
             }
@@ -46,20 +52,22 @@ public class MySqlUserAccess implements UserDAO{
         return null;
     }
 
-    private UserData readUser(ResultSet rs) throws DataAccessException{
+    private AuthData readAuth(ResultSet rs) throws DataAccessException{
         //var username = rs.getString("username");
         try {
-            var username = rs.getString("username");
-            var password = rs.getString("password");
-            var email = rs.getString("email");
-            var user = new UserData(username, password, email);
-            return user;
+        var authToken = rs.getString("authToken");
+        var username = rs.getString("username");
+        var auth = new AuthData(authToken, username);
+        return auth;
         }catch (Exception e) {
             throw new DataAccessException(e.getMessage());
         }
     }
 
-
+    public void deleteAuth(String authToken) throws DataAccessException{
+        var statement = "DELETE FROM authData WHERE authToken=?";
+        executeUpdate(statement, authToken);
+    }
 
     private void executeUpdate(String statement, Object... params) throws DataAccessException{
         try (var conn = DatabaseManager.getConnection()) {
@@ -83,18 +91,14 @@ public class MySqlUserAccess implements UserDAO{
         }
     }
 
-
-
     public final String[] createStatements = {
 
             """
-            CREATE TABLE IF NOT EXISTS  userData (
+            CREATE TABLE IF NOT EXISTS  authData (
+               `authToken` varchar(256) NOT NULL,
                `username` varchar(256) NOT NULL,
-               `password` varchar(256) NOT NULL,
-               `email` varchar(256) NOT NULL,
-                PRIMARY KEY (`username`),
-                INDEX(`password`),
-                INDEX(`email`)
+                PRIMARY KEY (`authToken`),
+                INDEX(`username`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
     };
