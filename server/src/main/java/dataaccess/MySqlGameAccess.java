@@ -1,18 +1,11 @@
 package dataaccess;
-
+import chess.ChessGame;
 import com.google.gson.Gson;
-import model.AuthData;
-import model.UserData;
 import model.GameData;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.UUID;
 
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
 
 public class MySqlGameAccess implements GameDAO{
@@ -48,6 +41,22 @@ public class MySqlGameAccess implements GameDAO{
         return null;
     }
 
+    private GameData readGame(ResultSet rs) throws DataAccessException{
+        //var username = rs.getString("username");
+        try {
+            var gameID = rs.getInt("gameID");
+            var whiteUsername = rs.getString("whiteUsername");
+            var blackUsername = rs.getString("blackUsername");
+            var gameName = rs.getString("gameName");
+            var json = rs.getString("game");
+            var game = new Gson().fromJson(json, ChessGame.class);
+            var read = new GameData(gameID, whiteUsername, blackUsername, gameName, game);
+            return read;
+        }catch (Exception e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
+
     private void executeUpdate(String statement, Object... params) throws DataAccessException{
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement)) {
@@ -55,16 +64,10 @@ public class MySqlGameAccess implements GameDAO{
                     var param = params[i];
                     if (param instanceof String p) ps.setString(i + 1, p);
                     else if (param instanceof Integer p) ps.setInt(i + 1, p);
+                    else if (param instanceof ChessGame p) ps.setString(i + 1, p);
                     else if (param == null) ps.setNull(i + 1, NULL);
                 }
                 ps.executeUpdate();
-
-//                var rs = ps.getGeneratedKeys();
-//                if (rs.next()) {
-//                    //return rs.getInt(1);
-//                }
-//
-//                return 0;
             }
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());

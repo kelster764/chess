@@ -1,4 +1,5 @@
 package service;
+import chess.ChessBoard;
 import chess.ChessGame;
 import model.AuthData;
 import model.UserData;

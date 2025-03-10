@@ -25,6 +25,7 @@ public class DataAccessTests {
         try {
             userDAO = new MySqlUserAccess();
             authDAO = new MySqlAuthAccess();
+            gameDAO = new MySqlGameAccess();
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
             userDAO = new MemoryUserAccess();
