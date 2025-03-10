@@ -18,6 +18,7 @@ public class DataAccessTests {
     private static final Logger LOG = LoggerFactory.getLogger(DataAccessTests.class);
     private UserDAO userDAO;
     private AuthDAO authDAO;
+    private GameDAO gameDAO;
 
 
     @BeforeEach

@@ -11,7 +11,7 @@ import java.util.Collection;
 import static java.sql.Types.NULL;
 
 public class MySqlGameAccess implements GameDAO{
-    public mySqlGameAccess() throws DataAccessException{
+    public MySqlGameAccess() throws DataAccessException{
         configureDatabase();
     }
 
@@ -27,6 +27,24 @@ public class MySqlGameAccess implements GameDAO{
         executeUpdate(statement);
     }
 
+    public void deleteGame(int gameID) throws DataAccessException {
+        var statement = "DELETE FROM gameData WHERE id=?";
+        executeUpdate(statement, gameID);
+    }
+
+//    public void updateGame(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame chessGame){
+//        GameData game = new GameData(gameID, whiteUsername, blackUsername, gameName, chessGame);
+//        deleteGame(gameID);
+//        chessGames.put(gameID, game);
+//
+//    }
+public void updateGame(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame chessGame) throws DataAccessException{
+    //GameData game = new GameData(gameID, whiteUsername, blackUsername, gameName, chessGame);
+    deleteGame(gameID);
+    var statement = "INSERT INTO gameData (gameID, whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?, ?, ?)";
+    executeUpdate(statement, gameID, whiteUsername, blackUsername, gameName, chessGame);
+
+}
 
     public GameData getGame(int gameID) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {

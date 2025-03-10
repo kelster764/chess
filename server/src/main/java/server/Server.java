@@ -37,11 +37,13 @@ public class Server {
 //    }
         //this.dataAccess =
         //this.userData == new UserData()
-        this.gameDao = new MemoryGameDao();
+
         try{
             this.authDao = new MySqlAuthAccess();
+            this.gameDao = new MySqlGameAccess();
         }catch(DataAccessException e) {
             this.authDao = new MemoryAuthAccess();
+            this.gameDao = new MemoryGameDao();
         }
         try{
             this.userDao = new MySqlUserAccess();
