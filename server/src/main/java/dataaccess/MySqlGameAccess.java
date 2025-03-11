@@ -42,7 +42,7 @@ public class MySqlGameAccess implements GameDAO{
 public void updateGame(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame chessGame) throws DataAccessException{
     //GameData game = new GameData(gameID, whiteUsername, blackUsername, gameName, chessGame);
     deleteGame(gameID);
-    var statement = "INSERT INTO gameData (gameID, whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?, ?, ?)";
+    var statement = "INSERT INTO gameData (gameID, whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?, ?)";
     executeUpdate(statement, gameID, whiteUsername, blackUsername, gameName, chessGame);
 
 }

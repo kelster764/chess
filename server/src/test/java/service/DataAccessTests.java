@@ -76,6 +76,10 @@ public class DataAccessTests {
     @Test
     public void createGame() throws DataAccessException{
         gameDAO.createGame(new GameData(4, null, null, "yomama", new ChessGame()));
+        gameDAO.createGame(new GameData(4, null, null, "cheese", new ChessGame()));
+    }
+    @Test void clearGame() throws DataAccessException{
+        gameDAO.clearGames();
     }
     @Test
     public void list_games() throws DataAccessException{
@@ -86,6 +90,10 @@ public class DataAccessTests {
     @Test
     public void deleteGame() throws DataAccessException{
         gameDAO.deleteGame(2);
+    }
+    @Test
+    public void updateGame() throws DataAccessException{
+        gameDAO.updateGame(1, "shoelace", "wawa", "yomama", new ChessGame());
     }
 
 }
