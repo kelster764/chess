@@ -34,25 +34,55 @@ public class DataAccessTests {
             gameDAO = new MemoryGameDao();
         }
     }
+    @Test
+    @DisplayName("clear database")
+    public void userClear() throws DataAccessException{
+        userDAO.clearUser();
+        userDAO.createUser(new UserData("cheese", "urmom", "cheese@gmail.com"));
+        userDAO.clearUser();
+        assert ((userDAO.getUser("cheese")) == null);
+    }
+
+
 
     @Test
     @DisplayName("test clearing")
-    public void usersql() throws DataAccessException{
+    public void userMake() throws DataAccessException{
+        userDAO.clearUser();
         userDAO.createUser(new UserData("cheese", "cheeseisgreat", "cheese@gmail.com"));
+        assert ((userDAO.getUser("cheese")) != null);
     }
 
     @Test
-    @DisplayName("clear database")
-    public void user_clear() throws DataAccessException{
+    public void userMakeFail() throws DataAccessException{
         userDAO.clearUser();
+        try{
+            userDAO.createUser(new UserData(null, "cheeseisgreat", "cheese@gmail.com"));
+        }catch (Exception ex){
+            Assertions.assertInstanceOf(DataAccessException.class, ex);
+        }
     }
+
 
     @Test
     @DisplayName("get name")
-    public void user_get() throws DataAccessException{
+    public void userGet() throws DataAccessException{
+        userDAO.clearUser();
+        userDAO.createUser(new UserData("cheese", "cheeseisgreat", "cheese@gmail.com"));
         UserData user = userDAO.getUser("cheese");
-        //Assertions.assertEquals(user, );
+        assert(user != null);
     }
+
+    public void userMakeFail() throws DataAccessException{
+        userDAO.clearUser();
+        try{
+            userDAO.createUser(new UserData(null, "cheeseisgreat", "cheese@gmail.com"));
+        }catch (Exception ex){
+            Assertions.assertInstanceOf(DataAccessException.class, ex);
+        }
+    }
+
+
     @Test
     @DisplayName("createAuth")
     public void auth_make() throws DataAccessException{
