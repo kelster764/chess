@@ -228,6 +228,7 @@ public class DataAccessTests {
         gameDAO.createGame(new GameData(1, null, null, "yomama", new ChessGame()));
         GameData game = gameDAO.getGame(1);
         assert (game != null);
+
     }
 
 
