@@ -77,6 +77,16 @@ public class DataAccessTests {
     public void createGame() throws DataAccessException{
         gameDAO.createGame(new GameData(4, null, null, "yomama", new ChessGame()));
     }
+    @Test
+    public void list_games() throws DataAccessException{
+        gameDAO.createGame(new GameData(4, null, null, "cheese", new ChessGame()));
+        Collection<GameData> games = gameDAO.listGames();
+        assert(!games.isEmpty());
+    }
+    @Test
+    public void deleteGame() throws DataAccessException{
+        gameDAO.deleteGame(2);
+    }
 
 }
 

@@ -29,7 +29,7 @@ public class MySqlGameAccess implements GameDAO{
     }
 
     public void deleteGame(int gameID) throws DataAccessException {
-        var statement = "DELETE FROM gameData WHERE id=?";
+        var statement = "DELETE FROM gameData WHERE gameID=?";
         executeUpdate(statement, gameID);
     }
 
