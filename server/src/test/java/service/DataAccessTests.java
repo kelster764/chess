@@ -73,25 +73,67 @@ public class DataAccessTests {
         assert(user != null);
     }
 
-    public void userMakeFail() throws DataAccessException{
+    @Test
+    public void userGetFail() throws DataAccessException{
         userDAO.clearUser();
         try{
-            userDAO.createUser(new UserData(null, "cheeseisgreat", "cheese@gmail.com"));
+            userDAO.getUser("cheese");
         }catch (Exception ex){
             Assertions.assertInstanceOf(DataAccessException.class, ex);
         }
     }
 
+    @Test
+    public void clearAuth() throws DataAccessException{
+        authDAO.clearAuth();
+        authDAO.createAuth("cheese");
+        authDAO.clearAuth();
+        assert(authDAO.getAuth("cheese") == null);
+    }
 
     @Test
     @DisplayName("createAuth")
-    public void auth_make() throws DataAccessException{
-        AuthData auth = authDAO.createAuth("cheese");
+    public void authMake() throws DataAccessException{
+        authDAO.clearAuth();
+        AuthData auth  = authDAO.createAuth("cheese");
+        assert(authDAO.getAuth(auth.authToken()) != null);
     }
+
+
     @Test
-    public void auth_delete() throws DataAccessException{
-        authDAO.deleteAuth("bc02a5ca-bd66-4e4c-b320-d2219ac78427");
+    public void authMakeFail() throws DataAccessException{
+        authDAO.clearAuth();
+        try{
+            authDAO.createAuth(null);
+        }catch (Exception ex){
+            Assertions.assertInstanceOf(DataAccessException.class, ex);
+        }
     }
+
+    @Test
+    public void authDelete() throws DataAccessException{
+        authDAO.clearAuth();
+        try{
+            AuthData auth = authDAO.createAuth("cheese");
+            authDAO.deleteAuth(auth.authToken());
+            assert (authDAO.getAuth(auth.authToken()) == null);
+        }catch (Exception ex){
+            Assertions.fail();
+        }
+    }
+
+    @Test
+    public void authDeleteFail() throws DataAccessException{
+        authDAO.clearAuth();
+        try{
+            AuthData auth = authDAO.createAuth(null);
+            authDAO.deleteAuth(auth.authToken());
+            Assertions.fail();
+        }catch (Exception ex){
+            Assertions.assertInstanceOf(DataAccessException.class, ex);
+        }
+    }
+
     @Test
     @DisplayName("get auth")
     public void auth_get() throws DataAccessException{
@@ -99,10 +141,7 @@ public class DataAccessTests {
         //Assertions.assertEquals(user, );
     }
 
-    @Test
-    public void clearAuth() throws DataAccessException{
-        authDAO.clearAuth();
-    }
+
     @Test
     public void createGame() throws DataAccessException{
         gameDAO.createGame(new GameData(4, null, null, "yomama", new ChessGame()));
