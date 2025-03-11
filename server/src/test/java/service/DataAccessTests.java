@@ -31,6 +31,7 @@ public class DataAccessTests {
             System.out.println(e.getMessage());
             userDAO = new MemoryUserAccess();
             authDAO = new MemoryAuthAccess();
+            gameDAO = new MemoryGameDao();
         }
     }
 
@@ -71,6 +72,10 @@ public class DataAccessTests {
     @Test
     public void clearAuth() throws DataAccessException{
         authDAO.clearAuth();
+    }
+    @Test
+    public void createGame() throws DataAccessException{
+        gameDAO.createGame(new GameData(4, null, null, "yomama", new ChessGame()));
     }
 
 }
