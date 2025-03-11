@@ -136,26 +136,63 @@ public class DataAccessTests {
 
     @Test
     @DisplayName("get auth")
-    public void auth_get() throws DataAccessException{
-        AuthData auth = authDAO.getAuth("a726f5ff-2eae-40db-874a-4c3f5ea392dc");
-        //Assertions.assertEquals(user, );
+    public void authGet() throws DataAccessException{
+        authDAO.clearAuth();
+        AuthData auth  = authDAO.createAuth("cheese");
+        assert(authDAO.getAuth(auth.authToken()) != null);
     }
-
 
     @Test
-    public void createGame() throws DataAccessException{
-        gameDAO.createGame(new GameData(4, null, null, "yomama", new ChessGame()));
-        gameDAO.createGame(new GameData(4, null, null, "cheese", new ChessGame()));
+    public void authGetFail() throws DataAccessException{
+        authDAO.clearAuth();
+        try{
+            //AuthData auth = authDAO.createAuth(null);
+            AuthData auth = authDAO.getAuth("1234");
+            assert (auth == null);
+        }catch (Exception ex){
+            Assertions.assertInstanceOf(DataAccessException.class, ex);
+        }
     }
+
     @Test void clearGame() throws DataAccessException{
         gameDAO.clearGames();
+        gameDAO.createGame(new GameData(4, null, null, "yomama", new ChessGame()));
+        gameDAO.clearGames();
+        assert (gameDAO.getGame(4) == null);
     }
     @Test
-    public void list_games() throws DataAccessException{
+    public void createGame() throws DataAccessException{
+        gameDAO.clearGames();
+        gameDAO.createGame(new GameData(4, null, null, "yomama", new ChessGame()));
+        gameDAO.createGame(new GameData(4, null, null, "cheese", new ChessGame()));
+        Collection<GameData> games = gameDAO.listGames();
+        assert (!games.isEmpty());
+    }
+    @Test
+    public void createGameFail() throws DataAccessException{
+        gameDAO.clearGames();
+        try{
+            //AuthData auth = authDAO.createAuth(null);
+            gameDAO.createGame(new GameData(4, null, null, null, new ChessGame()));
+            Assertions.fail();
+        }catch (Exception ex){
+            Assertions.assertInstanceOf(DataAccessException.class, ex);
+        }
+    }
+
+    @Test
+    public void listGames() throws DataAccessException{
+        gameDAO.clearGames();
         gameDAO.createGame(new GameData(4, null, null, "cheese", new ChessGame()));
         Collection<GameData> games = gameDAO.listGames();
         assert(!games.isEmpty());
     }
+
+    @Test
+    public void listGamesFail() throws DataAccessException{
+        gameDAO.clearGames();
+    }
+
     @Test
     public void deleteGame() throws DataAccessException{
         gameDAO.deleteGame(2);
