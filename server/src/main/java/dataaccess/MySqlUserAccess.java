@@ -20,14 +20,14 @@ public class MySqlUserAccess implements UserDAO{
     public UserData createUser(UserData userData) throws DataAccessException {
         var statement = "INSERT INTO userData (username, password, email) VALUES (?, ?, ?)";
         String hashedPassword = BCrypt.hashpw(userData.password(), BCrypt.gensalt());
-        executeUpdate(statement, userData.username(), hashedPassword, userData.email());
+        DatabaseManager.executeUpdate(statement, userData.username(), hashedPassword, userData.email());
         //executeUpdate(statement, userData.username(), userData.password(), userData.email());
         return new UserData(userData.username(), userData.password(), userData.email());
     }
 
     public void clearUser() throws DataAccessException{
         var statement = "TRUNCATE userData";
-        executeUpdate(statement);
+        DatabaseManager.executeUpdate(statement);
     }
     public UserData getUser(String username) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
@@ -61,29 +61,6 @@ public class MySqlUserAccess implements UserDAO{
 
 
 
-    private void executeUpdate(String statement, Object... params) throws DataAccessException{
-        try (var conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(statement)) {
-                for (var i = 0; i < params.length; i++) {
-                    var param = params[i];
-                    if (param instanceof String p) ps.setString(i + 1, p);
-                    else if (param == null) ps.setNull(i + 1, NULL);
-                }
-                ps.executeUpdate();
-
-//                var rs = ps.getGeneratedKeys();
-//                if (rs.next()) {
-//                    //return rs.getInt(1);
-//                }
-//
-//                return 0;
-            }
-        } catch (SQLException e) {
-            throw new DataAccessException(e.getMessage());
-        }
-    }
-
-
 
     public final String[] createStatements = {
 
@@ -100,20 +77,7 @@ public class MySqlUserAccess implements UserDAO{
     };
 
 
-    private void configureDatabase(String[] statements) throws DataAccessException {
-        DatabaseManager.createDatabase();
-        try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : statements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException ex) {
-            throw new DataAccessException(ex.getMessage());
-        }
-    }
-
     private void configureDatabase()throws DataAccessException{
-        configureDatabase(createStatements);
+        DatabaseManager.configureDatabase(createStatements);
     }
 }

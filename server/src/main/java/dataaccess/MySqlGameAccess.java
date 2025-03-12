@@ -2,7 +2,7 @@ package dataaccess;
 import chess.ChessGame;
 import com.google.gson.Gson;
 import model.GameData;
-
+import dataaccess.DatabaseManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -19,25 +19,27 @@ public class MySqlGameAccess implements GameDAO{
     public GameData createGame(GameData game) throws DataAccessException {
         var statement = "INSERT INTO gameData (whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?)";
         var json = new Gson().toJson(game.game());
-        var gameID = executeUpdate(statement, game.whiteUsername(), game.blackUsername(), game.gameName(), json);
+        var gameID = DatabaseManager.executeUpdate(statement, game.whiteUsername(), game.blackUsername(), game.gameName(), json);
+//        var gameID = executeUpdate(statement, game.whiteUsername(), game.blackUsername(), game.gameName(), json);
         return new GameData(gameID, game.whiteUsername(), game.blackUsername(), game.gameName(), game.game());
     }
 
     public void clearGames() throws DataAccessException {
         var statement = "TRUNCATE gameData";
-        executeUpdate(statement);
+        DatabaseManager.executeUpdate(statement);
+        //executeUpdate(statement);
     }
 
     public void deleteGame(int gameID) throws DataAccessException {
         var statement = "DELETE FROM gameData WHERE gameID=?";
-        executeUpdate(statement, gameID);
+        DatabaseManager.executeUpdate(statement, gameID);
     }
 
 public void updateGame(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame chessGame) throws DataAccessException{
     //GameData game = new GameData(gameID, whiteUsername, blackUsername, gameName, chessGame);
     deleteGame(gameID);
     var statement = "INSERT INTO gameData (gameID, whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?, ?)";
-    executeUpdate(statement, gameID, whiteUsername, blackUsername, gameName, chessGame);
+    DatabaseManager.executeUpdate(statement, gameID, whiteUsername, blackUsername, gameName, chessGame);
 
 }
 
@@ -91,28 +93,6 @@ public void updateGame(int gameID, String whiteUsername, String blackUsername, S
         }
     }
 
-    private int executeUpdate(String statement, Object... params) throws DataAccessException{
-        try (var conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
-                for (var i = 0; i < params.length; i++) {
-                    var param = params[i];
-                    if (param instanceof String p) ps.setString(i + 1, p);
-                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
-                    else if (param instanceof ChessGame p) ps.setString(i + 1, p.toString());
-                    else if (param == null) ps.setNull(i + 1, NULL);
-                }
-                ps.executeUpdate();
-
-                var rs = ps.getGeneratedKeys();
-                if(rs.next()){
-                    return rs.getInt(1);
-                }
-                return 0;
-            }
-        } catch (SQLException e) {
-            throw new DataAccessException(e.getMessage());
-        }
-    }
 
     public final String[] createStatements = {
 //I need to figure out how to put the game object into the thing
@@ -133,23 +113,8 @@ public void updateGame(int gameID, String whiteUsername, String blackUsername, S
     };
 
 
-    private void configureDatabase(String[] statements) throws DataAccessException {
-        DatabaseManager.createDatabase();
-        try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : statements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException ex) {
-            throw new DataAccessException(ex.getMessage());
-        }
-    }
-
     private void configureDatabase()throws DataAccessException{
-        configureDatabase(createStatements);
+        DatabaseManager.configureDatabase(createStatements);
     }
-
-
 
 }

@@ -21,7 +21,7 @@ public class LoginService {
         if (user == null) {
             throw new DataAccessException("Error: unauthorized");
         }
-        String expected_password = BCrypt.hashpw(userData.password(), BCrypt.gensalt());
+        //String expectedPassword = BCrypt.hashpw(userData.password(), BCrypt.gensalt());
         if (!BCrypt.checkpw(userData.password(), user.password())) {
             throw new DataAccessException("Error: unauthorized");
         }
