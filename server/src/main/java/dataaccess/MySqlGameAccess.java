@@ -33,12 +33,6 @@ public class MySqlGameAccess implements GameDAO{
         executeUpdate(statement, gameID);
     }
 
-//    public void updateGame(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame chessGame){
-//        GameData game = new GameData(gameID, whiteUsername, blackUsername, gameName, chessGame);
-//        deleteGame(gameID);
-//        chessGames.put(gameID, game);
-//
-//    }
 public void updateGame(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame chessGame) throws DataAccessException{
     //GameData game = new GameData(gameID, whiteUsername, blackUsername, gameName, chessGame);
     deleteGame(gameID);

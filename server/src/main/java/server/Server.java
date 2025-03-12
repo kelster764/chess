@@ -32,11 +32,7 @@ public class Server {
 
 
     public Server() {
-        //    public MySqlUserAccess() throws DataAccessException {
-//        configureDatabase();
-//    }
-        //this.dataAccess =
-        //this.userData == new UserData()
+
 
         try{
             this.authDao = new MySqlAuthAccess();

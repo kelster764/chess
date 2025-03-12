@@ -79,12 +79,6 @@ public class MySqlAuthAccess implements AuthDAO {
                 }
                 ps.executeUpdate();
 
-//                var rs = ps.getGeneratedKeys();
-//                if (rs.next()) {
-//                    //return rs.getInt(1);
-//                }
-//
-//                return 0;
             }
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
