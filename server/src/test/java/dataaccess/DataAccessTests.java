@@ -1,9 +1,8 @@
-package service;
+package dataaccess;
 import chess.ChessGame;
 import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.DisplayName;
-import dataaccess.*;
 import model.*;
 import org.junit.jupiter.api.*;
 
@@ -12,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
-import java.util.Objects;
 
 
 public class DataAccessTests {
