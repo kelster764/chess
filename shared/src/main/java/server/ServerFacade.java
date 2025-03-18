@@ -3,6 +3,7 @@ import com.google.gson.Gson;
 import model.*;
 import exception.DataAccessException;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -15,12 +16,22 @@ public class ServerFacade {
 
     public ServerFacade(String url) { serverUrl = url;}
 
-    public UserData register(UserData userData) throws DataAccessException {
+    public AuthData register(String username, String password, String email) throws DataAccessException {
         var path = "/user";
-        return this.makeRequest("POST", path, userData, UserData.class);
+        UserData user = new UserData(username, password, email);
+        return this.makeRequest("POST", path, user, AuthData.class);
     }
 
+    public AuthData login(String username, String password) throws DataAccessException{
+        var path = "/session";
+        UserData user = new UserData(username, password, null);
+        return this.makeRequest("POST", path, user, AuthData.class);
+    }
 
+    public void logout(String authToken) throws DataAccessException{
+        var path = "/session";
+        this.makeRequest("DELETE", path, null, null);
+    }
 
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws DataAccessException{
