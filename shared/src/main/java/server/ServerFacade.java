@@ -33,6 +33,11 @@ public class ServerFacade {
         this.makeRequest("DELETE", path, null, null);
     }
 
+    public GameData createGame(String gameName) throws DataAccessException{
+        var path = "/game";
+        GameData game = new GameData()
+    }
+
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws DataAccessException{
         try{
