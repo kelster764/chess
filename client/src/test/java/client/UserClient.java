@@ -1,27 +1,18 @@
 package client;
-import com.google.gson.Gson;
-import model.*;
 import exception.DataAccessException;
 import server.Server;
 import server.ServerFacade;
 
-import javax.xml.crypto.Data;
-import java.awt.*;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.*;
 import java.util.Arrays;
 
-public class PreLoginClient {
+public class UserClient {
     private static String serverUrl;
     private static Server server;
     private static ServerFacade sv;
-    private State state = State.SIGNEDOUT;
+    private State state = State.LOGGEDOUT;
 
 
-    public PreLoginClient(String serverUrl){
+    public UserClient(String serverUrl){
         sv = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
     }
@@ -44,7 +35,7 @@ public class PreLoginClient {
         if (params.length == 3){
             String visitorName = params[0];
             sv.register(visitorName, params[1], params[2]);
-            state = State.SIGNEDIN;
+            state = State.LOGGEDIN;
             return String.format("Welcome", visitorName);
         }
         throw new DataAccessException("Expected username, password, and email");
@@ -59,5 +50,9 @@ public class PreLoginClient {
                 """;    }
 
 
-
+    private void assertSignedIn() throws DataAccessException {
+        if (state == State.LOGGEDOUT) {
+            throw new DataAccessException("You must sign in");
+        }
+    }
 }
