@@ -68,9 +68,9 @@ public class UserClient {
         assertSignedIn();
         sv.logout(authToken);
         state = State.LOGGEDOUT;
-        String visitor = visitorName;
-        visitorName = null;
-        return String.format("Goodbye, %s!", visitor);
+        //String visitor = visitorName;
+        //visitorName = null;
+        return "Goodbye!";
     }
 
     public String help() {
