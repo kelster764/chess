@@ -17,6 +17,11 @@ public class ServerFacade {
 
     public ServerFacade(String url) { serverUrl = url;}
 
+    public void clear() throws DataAccessException{
+        var path = "/db";
+        this.makeRequest("DELETE", path, null, null,  null);
+    }
+
     public AuthData register(String username, String password, String email) throws DataAccessException {
         var path = "/user";
         UserData user = new UserData(username, password, email);
