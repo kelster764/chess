@@ -80,7 +80,7 @@ public class UserClient {
         return "Goodbye!";
     }
 
-    //put list here
+    //put list here g
 
     public String help() {
         if (state == State.LOGGEDOUT) {
