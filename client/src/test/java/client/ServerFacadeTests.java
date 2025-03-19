@@ -41,6 +41,7 @@ public class ServerFacadeTests {
             AuthData authData = sv.register("urmom", "ishot", "doIlooklike@gmail.com");
             System.out.println(authData.authToken());
             assert authData.authToken() != null;
+            sv.logout(authData.authToken());
 
         }catch(Exception ex){
             ex.getMessage();
@@ -48,6 +49,7 @@ public class ServerFacadeTests {
         }
 
     }
+
     @Test
     public void loginTest(){
         try {

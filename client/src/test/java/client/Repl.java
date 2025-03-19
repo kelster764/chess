@@ -30,6 +30,6 @@ public class Repl {
     }
 
     private void printPrompt() {
-        System.out.print("\n" + ">>> ");
+        System.out.print("\n" + '[' + client.state+ ']' + " >>> ");
     }
 }
