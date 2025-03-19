@@ -25,12 +25,19 @@ public class UserClient {
             var tokens = input.toLowerCase().split(" ");
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
-            return switch(cmd){
-                case "register" -> register(params);
-                case "login" -> login(params);
+            if(state == State.LOGGEDOUT) {
+                return switch (cmd) {
+                    case "register" -> register(params);
+                    case "login" -> login(params);
+                    default -> help();
+                };
+            }
+            else return switch (cmd) {
                 case "logout" -> logout();
+                case "list" -> list();
                 default -> help();
             };
+
         }catch(Exception ex) {
             return ex.getMessage();
         }
@@ -72,6 +79,8 @@ public class UserClient {
         //visitorName = null;
         return "Goodbye!";
     }
+
+    //put list here
 
     public String help() {
         if (state == State.LOGGEDOUT) {
