@@ -48,5 +48,21 @@ public class ServerFacadeTests {
         }
 
     }
+    @Test
+    public void loginTest(){
+        try {
+            sv.clear();
+            AuthData authData = sv.register("urmom", "ishot", "doIlooklike@gmail.com");
+            sv.logout(authData.authToken());
+            AuthData authData2 = sv.login("urmom", "ishot");
+            System.out.println(authData.authToken());
+            assert authData2.authToken() != null;
+
+        }catch(Exception ex){
+            ex.getMessage();
+            Assertions.fail();
+        }
+
+    }
 
 }
