@@ -1,5 +1,6 @@
 package client;
 
+import dataaccess.DataAccessException;
 import model.AuthData;
 import model.GameData;
 import org.junit.jupiter.api.*;
@@ -50,6 +51,19 @@ public class ServerFacadeTests {
         }
 
     }
+    @Test
+    public void registerTestFail(){
+        try {
+            sv.clear();
+            sv.register(null, "ishot", "doIlooklike@gmail.com");
+            Assertions.fail();
+
+        }catch(Exception ex){
+            ex.getMessage();
+            //Assertions.assertInstanceOf(DataAccessException.class, ex);
+        }
+
+    }
 
     @Test
     public void loginTest(){
@@ -69,6 +83,21 @@ public class ServerFacadeTests {
     }
 
     @Test
+    public void loginTestFail() {
+        try {
+            sv.clear();
+            AuthData authData = sv.register("urmom", "ishot", "doIlooklike@gmail.com");
+            sv.logout(authData.authToken());
+            AuthData authData2 = sv.login("urmom", "iswrong");
+            Assertions.fail();
+            //assert authData2.authToken() != null;
+
+        } catch (Exception ex) {
+            ex.getMessage();
+        }
+    }
+
+    @Test
     public void createGameTest(){
         try{
             sv.clear();
@@ -83,6 +112,20 @@ public class ServerFacadeTests {
         } catch(Exception ex){
             ex.getMessage();
             Assertions.fail();
+
+        }
+    }
+
+    @Test
+    public void createGameTestFail(){
+        try{
+            sv.clear();
+            AuthData authData = sv.register("urmom", "ishot", "blah");
+            GameData gameData = sv.createGame(null, authData.authToken());
+            Assertions.fail();
+
+        } catch(Exception ex){
+            ex.getMessage();
         }
     }
 
