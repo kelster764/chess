@@ -1,4 +1,5 @@
 package client;
+import com.google.gson.Gson;
 import exception.DataAccessException;
 import model.AuthData;
 import model.GameData;
@@ -36,7 +37,7 @@ public class UserClient {
             else return switch (cmd) {
                 case "logout" -> logout();
                 case "create" -> create(params);
-//                case "list" -> list();
+                case "list" -> list();
                 default -> help();
             };
 
@@ -90,9 +91,16 @@ public class UserClient {
         return String.format("Your gameID is %d", gameID);
     }
 
-//    public String list() throws DataAccessException{
-//        assertSignedIn();
-//    }
+    public String list() throws DataAccessException{
+        assertSignedIn();
+        var games = sv.listGames(authToken);
+        var result = new StringBuilder();
+        var gson = new Gson();
+        for (var game : games) {
+            result.append(gson.toJson(game)).append('\n');
+        }
+        return result.toString();
+    }
 
     //put list here g
 
