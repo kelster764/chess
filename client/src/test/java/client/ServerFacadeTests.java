@@ -86,4 +86,20 @@ public class ServerFacadeTests {
         }
     }
 
+    @Test
+    public void listGameTest(){
+        try {
+            sv.clear();
+            AuthData authData = sv.register("urmom", "ishot", "blah");
+            sv.createGame("bestGame", authData.authToken());
+            GameData[] gameData = sv.listGames(authData.authToken());
+            assert gameData != null;
+            sv.clear();
+
+        }catch(Exception ex){
+            ex.getMessage();
+            Assertions.fail();
+        }
+    }
+
 }

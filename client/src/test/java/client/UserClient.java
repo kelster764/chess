@@ -35,8 +35,8 @@ public class UserClient {
             }
             else return switch (cmd) {
                 case "logout" -> logout();
-                case "create" -> create();
-                //case "list" -> list();
+                case "create" -> create(params);
+//                case "list" -> list();
                 default -> help();
             };
 
@@ -89,6 +89,10 @@ public class UserClient {
         int gameID = gameData.gameID();
         return String.format("Your gameID is %d", gameID);
     }
+
+//    public String list() throws DataAccessException{
+//        assertSignedIn();
+//    }
 
     //put list here g
 
