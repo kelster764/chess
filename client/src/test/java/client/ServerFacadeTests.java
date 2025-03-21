@@ -1,6 +1,7 @@
 package client;
 
 import model.AuthData;
+import model.GameData;
 import org.junit.jupiter.api.*;
 import server.Server;
 import server.ServerFacade;
@@ -65,6 +66,24 @@ public class ServerFacadeTests {
             Assertions.fail();
         }
 
+    }
+
+    @Test
+    public void createGameTest(){
+        try{
+            sv.clear();
+            AuthData authData = sv.register("urmom", "ishot", "blah");
+            GameData gameData = sv.createGame("bestGame", authData.authToken());
+            //AuthData authData2 = sv.register("cheese", "ishot", "blah");
+            GameData gameData2 = sv.createGame("wahwah", authData.authToken());
+            assert gameData.gameID() == 1;
+            assert gameData2.gameID() == 2;
+            sv.clear();
+
+        } catch(Exception ex){
+            ex.getMessage();
+            Assertions.fail();
+        }
     }
 
 }

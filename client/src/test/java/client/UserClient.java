@@ -1,6 +1,7 @@
 package client;
 import exception.DataAccessException;
 import model.AuthData;
+import model.GameData;
 import server.Server;
 import server.ServerFacade;
 
@@ -34,7 +35,8 @@ public class UserClient {
             }
             else return switch (cmd) {
                 case "logout" -> logout();
-                case "list" -> list();
+                case "create" -> create();
+                //case "list" -> list();
                 default -> help();
             };
 
@@ -78,6 +80,14 @@ public class UserClient {
         //String visitor = visitorName;
         //visitorName = null;
         return "Goodbye!";
+    }
+
+    public String create(String... params) throws DataAccessException{
+        assertSignedIn();
+        String gameName = params[0];
+        GameData gameData = sv.createGame(gameName, authToken);
+        int gameID = gameData.gameID();
+        return String.format("Your gameID is %d", gameID);
     }
 
     //put list here g
