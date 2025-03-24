@@ -5,6 +5,7 @@ import model.AuthData;
 import model.GameData;
 import server.Server;
 import server.ServerFacade;
+import ui.ChessPrint;
 
 import java.util.Arrays;
 
@@ -38,12 +39,19 @@ public class UserClient {
                 case "logout" -> logout();
                 case "create" -> create(params);
                 case "list" -> list();
+                case "observe" -> observe(params);
                 default -> help();
             };
 
         }catch(Exception ex) {
             return ex.getMessage();
         }
+    }
+
+    private String observe(String... params) throws DataAccessException {
+        ChessPrint chessBoard = new ChessPrint();
+        chessBoard.main(new String[]{});
+        return "Board displayed";
     }
 
     public String register(String... params) throws DataAccessException{

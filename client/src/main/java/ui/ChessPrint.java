@@ -36,15 +36,15 @@ public class ChessPrint {
 
         drawHeaders(out);
 
-        out.print(SET_BG_COLOR_BLACK);
-        out.print(SET_TEXT_COLOR_WHITE);
+        //out.print(SET_BG_COLOR_BLACK);
+        //out.print(SET_TEXT_COLOR_WHITE);
     }
 
 
     private static void drawHeaders(PrintStream out) {
         //setGray(out);
 
-        String[] headers = {"a", "b", "c", "d", "e", "f", "g", "h"};
+        String[] headers = {" ","a", "b", "c", "d", "e", "f", "g", "h", " "};
         for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
             drawHeader(out, headers[boardCol]);
         }
@@ -83,13 +83,9 @@ public class ChessPrint {
 
     private static void drawRowOfSquares(PrintStream out, int boardRow) {
         String[] blackPieces = {String.valueOf(boardRow),BLACK_ROOK,BLACK_BISHOP,BLACK_KNIGHT,BLACK_QUEEN,BLACK_KING,
-        BLACK_BISHOP, BLACK_KNIGHT, BLACK_ROOK, String.valueOf(boardRow)};
-
-        for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_PADDED_CHARS; ++squareRow) {
+                BLACK_BISHOP, BLACK_KNIGHT, BLACK_ROOK, String.valueOf(boardRow)};
             for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
                 setWhite(out);
-
-                if (squareRow == SQUARE_SIZE_IN_PADDED_CHARS / 2) {
                     int prefixLength = SQUARE_SIZE_IN_PADDED_CHARS / 2;
                     int suffixLength = SQUARE_SIZE_IN_PADDED_CHARS - prefixLength - 1;
 
@@ -97,22 +93,44 @@ public class ChessPrint {
                     printPlayer(out, blackPieces[boardCol]);
                     out.print(EMPTY.repeat(suffixLength));
                 }
-                else {
-                    out.print(EMPTY.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
-                }
-
-                if (boardCol < BOARD_SIZE_IN_SQUARES - 1) {
-                    // Draw vertical column separator.
-                    setRed(out);
-                    out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
-                }
 
                 setBlack(out);
-            }
 
             out.println();
-        }
     }
+
+//    private static void drawRowOfSquares(PrintStream out, int boardRow) {
+//        String[] blackPieces = {String.valueOf(boardRow),BLACK_ROOK,BLACK_BISHOP,BLACK_KNIGHT,BLACK_QUEEN,BLACK_KING,
+//        BLACK_BISHOP, BLACK_KNIGHT, BLACK_ROOK, String.valueOf(boardRow)};
+//
+//        for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_PADDED_CHARS; ++squareRow) {
+//            for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
+//                setWhite(out);
+//
+//                if (squareRow == SQUARE_SIZE_IN_PADDED_CHARS / 2) {
+//                    int prefixLength = SQUARE_SIZE_IN_PADDED_CHARS / 2;
+//                    int suffixLength = SQUARE_SIZE_IN_PADDED_CHARS - prefixLength - 1;
+//
+//                    out.print(EMPTY.repeat(prefixLength));
+//                    printPlayer(out, blackPieces[boardCol]);
+//                    out.print(EMPTY.repeat(suffixLength));
+//                }
+//                else {
+//                    out.print(EMPTY.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
+//                }
+//
+//                if (boardCol < BOARD_SIZE_IN_SQUARES - 1) {
+//                    // Draw vertical column separator.
+//                    setRed(out);
+//                    out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
+//                }
+//
+//                setBlack(out);
+//            }
+//
+//            out.println();
+//        }
+//    }
     private static void printPlayer(PrintStream out, String player) {
         out.print(SET_BG_COLOR_WHITE);
         out.print(SET_TEXT_COLOR_BLACK);
