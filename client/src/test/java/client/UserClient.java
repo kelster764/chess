@@ -35,14 +35,16 @@ public class UserClient {
                     default -> help();
                 };
             }
-            else return switch (cmd) {
-                case "logout" -> logout();
-                case "create" -> create(params);
-                case "list" -> list();
-                case "observe" -> observe(params);
-                case "join" -> join(params);
-                default -> help();
-            };
+            else {
+                return switch (cmd) {
+                    case "logout" -> logout();
+                    case "create" -> create(params);
+                    case "list" -> list();
+                    case "observe" -> observe(params);
+                    case "join" -> join(params);
+                    default -> help();
+                };
+            }
 
         }catch(Exception ex) {
             return ex.getMessage();

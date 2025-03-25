@@ -3,8 +3,6 @@ import com.google.gson.Gson;
 import model.*;
 import exception.DataAccessException;
 
-import javax.xml.crypto.Data;
-import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -47,9 +45,9 @@ public class ServerFacade {
     
     public GameData[] listGames(String authToken) throws DataAccessException{
         var path = "/game";
-        record listGameResponse(GameData[] games){
+        record ListGameResponse(GameData[] games){
         }
-        var response = this.makeRequest("GET", path, null, authToken, listGameResponse.class);
+        var response = this.makeRequest("GET", path, null, authToken, ListGameResponse.class);
         return response.games;
     }
 
