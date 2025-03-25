@@ -73,7 +73,7 @@ public class ChessPrint {
     private static void drawChessBoard(PrintStream out) {
 
         for (int boardRow = 1; boardRow < BOARD_SIZE_IN_SQUARES-1; ++boardRow) {
-            setWhite(out);
+            //setWhite(out);
             //out.print(EMPTY.repeat(1));
             drawRowOfSquares(out, boardRow);
 
@@ -89,17 +89,42 @@ public class ChessPrint {
         String rowLabel = String.format(" "+String.valueOf(boardRow+ " "));
         String[] blackPieces = {rowLabel,BLACK_ROOK,BLACK_BISHOP,BLACK_KNIGHT,BLACK_QUEEN,BLACK_KING,
                 BLACK_BISHOP, BLACK_KNIGHT, BLACK_ROOK, rowLabel};
-            for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
-                setWhite(out);
-                    int prefixLength = SQUARE_SIZE_IN_PADDED_CHARS / 2;
-                    int suffixLength = SQUARE_SIZE_IN_PADDED_CHARS - prefixLength - 1;
+        String[] pawnPieces = {rowLabel,BLACK_PAWN,BLACK_PAWN,BLACK_PAWN,BLACK_PAWN,BLACK_PAWN,
+                BLACK_PAWN, BLACK_PAWN, BLACK_PAWN, rowLabel};
+        String[] blankPieces = {rowLabel,"   ","   ","   ","   ","   ",
+                "   ", "   ", "   ", rowLabel};
+                setMagenta(out);
+                printPlayer(out, blackPieces[0], false);
+                int start_square = boardRow % 2;
+            for (int boardCol = 1; boardCol < BOARD_SIZE_IN_SQUARES - 1; ++boardCol) {
+                if (start_square % 2 == 1){
+                    setGray(out);
+                }
+                else{
+                    setWhite(out);
+                }
+                if(boardRow == 8){
+                    printPlayer(out, pawnPieces[boardCol], true);
+                }
+                else if(boardRow == 7){
+                    printPlayer(out, blackPieces[boardCol], true);
+                }
+                else if(boardRow == 2){
+                    printPlayer(out, blackPieces[boardCol], false);
+                }
+                else if(boardRow == 1){
+                    printPlayer(out, pawnPieces[boardCol], false);
+                }
+                else{
+                    printPlayer(out, blankPieces[boardCol], false);
+                }
 
-                    //out.print(EMPTY.repeat(prefixLength));
-                    printPlayer(out, blackPieces[boardCol]);
-                    //out.print(EMPTY.repeat(suffixLength));
+                start_square++;
                 }
 
                 //setBlack(out);
+        setMagenta(out);
+        printPlayer(out, blackPieces[BOARD_SIZE_IN_SQUARES - 1], false);
             setDef(out);
 
             out.println();
@@ -155,17 +180,29 @@ public class ChessPrint {
 //            out.println();
 //        }
 //    }
-    private static void printPlayer(PrintStream out, String player) {
-        out.print(SET_BG_COLOR_WHITE);
-        out.print(SET_TEXT_COLOR_BLACK);
-
+    private static void printPlayer(PrintStream out, String player, boolean isWhite) {
+        //out.print(SET_BG_COLOR_WHITE);
+        if(isWhite){
+            out.print(SET_TEXT_COLOR_BLUE);
+        }else {
+            out.print(SET_TEXT_COLOR_BLACK);
+        }
         out.print(player);
 
-        setWhite(out);
+        //setWhite(out);
     }
 
     private static void setWhite(PrintStream out) {
         out.print(SET_BG_COLOR_WHITE);
+        //out.print(SET_TEXT_COLOR_WHITE);
+    }
+
+    private static void setMagenta(PrintStream out) {
+        out.print(SET_BG_COLOR_MAGENTA);
+        out.print(SET_TEXT_COLOR_WHITE);
+    }
+    private static void setGray(PrintStream out) {
+        out.print(SET_BG_COLOR_LIGHT_GREY);
         out.print(SET_TEXT_COLOR_WHITE);
     }
 
