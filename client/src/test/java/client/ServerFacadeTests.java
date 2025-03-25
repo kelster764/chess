@@ -145,4 +145,19 @@ public class ServerFacadeTests {
         }
     }
 
+    @Test
+    public void listGameTestFail(){
+        try {
+            sv.clear();
+            AuthData authData = sv.register("urmom", "ishot", "blah");
+            sv.createGame("bestGame", authData.authToken());
+            GameData[] gameData = sv.listGames(null);
+            Assertions.fail();
+            sv.clear();
+
+        }catch(Exception ex){
+            ex.getMessage();
+        }
+    }
+
 }
