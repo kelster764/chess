@@ -98,6 +98,36 @@ public class ServerFacadeTests {
     }
 
     @Test
+    public void logoutTest(){
+        try {
+            sv.clear();
+            AuthData authData = sv.register("urmom", "ishot", "doIlooklike@gmail.com");
+            sv.logout(authData.authToken());
+            sv.clear();
+
+        }catch(Exception ex){
+            ex.getMessage();
+            Assertions.fail();
+        }
+
+    }
+
+    @Test
+    public void logoutTestFail(){
+        try {
+            sv.clear();
+            //AuthData authData = sv.register("urmom", "ishot", "doIlooklike@gmail.com");
+            sv.logout(null);
+            sv.clear();
+            Assertions.fail();
+        }catch(Exception ex){
+            ex.getMessage();
+
+        }
+
+    }
+
+    @Test
     public void createGameTest(){
         try{
             sv.clear();
