@@ -100,7 +100,12 @@ public class ChessPrint {
     }
 
     private static void drawRowOfSquares(PrintStream out, int boardRow) {
-        String rowLabel = String.format(" "+String.valueOf(boardRow+ " "));
+        int colStart = Objects.equals(COLOR, "WHITE") ? 1 : 8;
+        int colEnd = Objects.equals(COLOR, "WHITE") ? 8 : 1;
+        int colStep = Objects.equals(COLOR, "WHITE")  ? 1 : -1;
+        //int rowStart = colStart;
+
+        String rowLabel = String.format(" "+String.valueOf(String.valueOf(boardRow)+ " "));
         String[] blackPieces = {rowLabel,BLACK_ROOK,BLACK_BISHOP,BLACK_KNIGHT,BLACK_QUEEN,BLACK_KING,
                 BLACK_BISHOP, BLACK_KNIGHT, BLACK_ROOK, rowLabel};
         String[] pawnPieces = {rowLabel,BLACK_PAWN,BLACK_PAWN,BLACK_PAWN,BLACK_PAWN,BLACK_PAWN,
@@ -110,7 +115,8 @@ public class ChessPrint {
                 setMagenta(out);
                 printPlayer(out, blackPieces[0], false);
                 int start_square = boardRow % 2;
-            for (int boardCol = 1; boardCol < BOARD_SIZE_IN_SQUARES - 1; ++boardCol) {
+            for (int boardCol = colStart; boardCol != colEnd + colStep; boardCol+= colStep) {
+
                 if (start_square % 2 == 1){
                     setGray(out);
                 }
@@ -134,6 +140,7 @@ public class ChessPrint {
                 }
 
                 start_square++;
+                //boardRow += colStep;
                 }
 
                 //setBlack(out);
