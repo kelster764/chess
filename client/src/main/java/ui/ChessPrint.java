@@ -85,17 +85,20 @@ public class ChessPrint {
     }
 
     private static void drawChessBoard(PrintStream out) {
+        int colStart = Objects.equals(COLOR, "WHITE") ? 1 : 8;
+        int colEnd = Objects.equals(COLOR, "WHITE") ? 9 : 0;
+        int colStep = Objects.equals(COLOR, "WHITE")  ? 1 : -1;
 
-        for (int boardRow = 1; boardRow < BOARD_SIZE_IN_SQUARES-1; ++boardRow) {
+        for (int startRow = colStart; startRow != colEnd; startRow+= colStep) {
             //setWhite(out);
             //out.print(EMPTY.repeat(1));
-            drawRowOfSquares(out, boardRow);
+            drawRowOfSquares(out, startRow);
 
-            if (boardRow < BOARD_SIZE_IN_SQUARES - 1) {
-                // Draw horizontal row separator.
-                //drawHorizontalLine(out);
-                setBlack(out);
-            }
+//            if (startRow < BOARD_SIZE_IN_SQUARES - 1) {
+//                // Draw horizontal row separator.
+//                //drawHorizontalLine(out);
+//                setBlack(out);
+//            }
         }
     }
 
