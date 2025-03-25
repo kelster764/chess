@@ -40,6 +40,7 @@ public class UserClient {
                 case "create" -> create(params);
                 case "list" -> list();
                 case "observe" -> observe(params);
+                case "join" -> join(params);
                 default -> help();
             };
 
@@ -99,6 +100,16 @@ public class UserClient {
         return String.format("Your gameID is %d", gameID);
     }
 
+    public String join(String... params) throws DataAccessException{
+        assertSignedIn();
+        String gameColor = params[1];
+        ChessPrint chessBoard = new ChessPrint();
+        chessBoard.main(new String[]{gameColor});
+        return "play!";
+    }
+
+
+
     public String list() throws DataAccessException{
         assertSignedIn();
         var games = sv.listGames(authToken);
@@ -124,7 +135,7 @@ public class UserClient {
         return """
                 create <NAME> - a game
                 list - games
-                join <ID> - a game
+                join <ID> [WHITE | BLACK] - a game
                 observe <ID> - a game
                 logout - when you are done
                 quit - playing chess

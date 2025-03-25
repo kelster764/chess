@@ -1,6 +1,10 @@
 package ui;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Objects;
 
 import static ui.EscapeSequences.*;
 
@@ -23,12 +27,19 @@ public class ChessPrint {
     public static final String BLACK_ROOK = " R ";
     public static final String BLACK_PAWN = " P ";
     public static final String EMPTY = " \u2003 ";
+    public static String COLOR = "WHITE";
 
 
     public static void main(String[] args) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
         out.print(ERASE_SCREEN);
+
+        if(args.length > 0){
+            if (args[0].equalsIgnoreCase("black")){
+                COLOR = "BLACK";
+            }
+        }
 
         drawHeaders(out);
 
@@ -45,6 +56,9 @@ public class ChessPrint {
         //setGray(out);
 
         String[] headers = {"   "," a ", " b ", " c ", " d ", " e ", " f ", " g ", " h ", "   "};
+        if(Objects.equals(COLOR, "BLACK")){
+            Collections.reverse(Arrays.asList(headers));
+        }
         //out.print(EMPTY.repeat(1));
         for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
             drawHeader(out, headers[boardCol]);
@@ -103,16 +117,16 @@ public class ChessPrint {
                 else{
                     setWhite(out);
                 }
-                if(boardRow == 8){
+                if(boardRow == 7){
                     printPlayer(out, pawnPieces[boardCol], true);
                 }
-                else if(boardRow == 7){
+                else if(boardRow == 8){
                     printPlayer(out, blackPieces[boardCol], true);
                 }
-                else if(boardRow == 2){
+                else if(boardRow == 1){
                     printPlayer(out, blackPieces[boardCol], false);
                 }
-                else if(boardRow == 1){
+                else if(boardRow == 2){
                     printPlayer(out, pawnPieces[boardCol], false);
                 }
                 else{
