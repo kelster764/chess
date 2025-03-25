@@ -190,4 +190,32 @@ public class ServerFacadeTests {
         }
     }
 
+    @Test
+    public void joinGameTest(){
+        try{
+            sv.clear();
+            AuthData authData = sv.register("urmom", "ishot", "blah");
+            GameData gameData = sv.createGame("bestGame", authData.authToken());
+            sv.joinGame(gameData.gameID(), "WHITE", authData.authToken());
+
+        }catch(Exception ex){
+            ex.getMessage();
+            Assertions.fail();
+        }
+    }
+
+    @Test
+    public void joinGameTestFail(){
+        try{
+            sv.clear();
+            AuthData authData = sv.register("urmom", "ishot", "blah");
+            GameData gameData = sv.createGame("bestGame", authData.authToken());
+            sv.joinGame(gameData.gameID(), null, authData.authToken());
+            Assertions.fail();
+        }catch(Exception ex){
+            ex.getMessage();
+
+        }
+    }
+
 }
