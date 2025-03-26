@@ -74,13 +74,19 @@ public class UserClient {
         throw new DataAccessException("Expected username, password, and email");
     }
 
-    public String login(String... params) throws DataAccessException{
-        if (params.length == 2){
-            String visitorName = params[0];
-            AuthData authData = sv.login(visitorName, params[1]);
-            authToken = authData.authToken();
-            state = State.LOGGEDIN;
-            return String.format("Welcome %s", visitorName);
+    public String login(String... params) throws DataAccessException {
+        if (params.length == 2) {
+            try {
+                String visitorName = params[0];
+                AuthData authData = sv.login(visitorName, params[1]);
+                authToken = authData.authToken();
+                state = State.LOGGEDIN;
+                return String.format("Welcome %s", visitorName);
+            } catch (Exception ex) {
+                if (ex.getMessage() == "not null") {
+                    throw new DataAccessException("user not found");
+                }
+            }
         }
         throw new DataAccessException("Expected username and password");
     }

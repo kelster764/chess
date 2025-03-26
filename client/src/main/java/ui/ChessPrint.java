@@ -75,9 +75,9 @@ public class ChessPrint {
     }
 
     private static void drawChessBoard(PrintStream out) {
-        int colStart = Objects.equals(color, "WHITE") ? 1 : 8;
-        int colEnd = Objects.equals(color, "WHITE") ? 9 : 0;
-        int colStep = Objects.equals(color, "WHITE")  ? 1 : -1;
+        int colStart = Objects.equals(color, "WHITE") ? 8 : 1;
+        int colEnd = Objects.equals(color, "WHITE") ? 0 : 9;
+        int colStep = Objects.equals(color, "WHITE")  ? -1 : 1;
 
         for (int startRow = colStart; startRow != colEnd; startRow+= colStep) {
             drawRowOfSquares(out, startRow);
@@ -90,7 +90,7 @@ public class ChessPrint {
         int colStep = Objects.equals(color, "WHITE")  ? 1 : -1;
 
         String rowLabel = String.format(" "+String.valueOf(String.valueOf(boardRow)+ " "));
-        String[] blackPieces = {rowLabel,BLACK_ROOK,BLACK_BISHOP,BLACK_KNIGHT,BLACK_QUEEN,BLACK_KING,
+        String[] blackPieces = {rowLabel,BLACK_ROOK,BLACK_KNIGHT,BLACK_BISHOP,BLACK_QUEEN,BLACK_KING,
                 BLACK_BISHOP, BLACK_KNIGHT, BLACK_ROOK, rowLabel};
         String[] pawnPieces = {rowLabel,BLACK_PAWN,BLACK_PAWN,BLACK_PAWN,BLACK_PAWN,BLACK_PAWN,
                 BLACK_PAWN, BLACK_PAWN, BLACK_PAWN, rowLabel};
@@ -101,23 +101,26 @@ public class ChessPrint {
                 int startSquare = boardRow % 2;
             for (int boardCol = colStart; boardCol != colEnd + colStep; boardCol+= colStep) {
 
-                if (startSquare % 2 == 1){
+                if (startSquare % 2 == 1 &&  Objects.equals(color, "WHITE")){
+                    setGray(out);
+                }
+                else if (startSquare % 2 == 0 &&  Objects.equals(color, "BLACK")){
                     setGray(out);
                 }
                 else{
                     setWhite(out);
                 }
                 if(boardRow == 7){
-                    printPlayer(out, pawnPieces[boardCol], true);
+                    printPlayer(out, pawnPieces[boardCol], false);
                 }
                 else if(boardRow == 8){
-                    printPlayer(out, blackPieces[boardCol], true);
-                }
-                else if(boardRow == 1){
                     printPlayer(out, blackPieces[boardCol], false);
                 }
+                else if(boardRow == 1){
+                    printPlayer(out, blackPieces[boardCol], true);
+                }
                 else if(boardRow == 2){
-                    printPlayer(out, pawnPieces[boardCol], false);
+                    printPlayer(out, pawnPieces[boardCol], true);
                 }
                 else{
                     printPlayer(out, blankPieces[boardCol], false);
