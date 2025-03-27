@@ -38,6 +38,9 @@ public class ChessPrint {
             if (args[0].equalsIgnoreCase("black")){
                 color = "BLACK";
             }
+            else{
+                color = "WHITE";
+            }
         }
 
         drawHeaders(out);

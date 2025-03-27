@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class ServerFacade {
 
@@ -43,12 +45,25 @@ public class ServerFacade {
         return this.makeRequest("POST", path, game, authToken, GameData.class);
     }
     
-    public GameData[] listGames(String authToken) throws DataAccessException{
+    public Collection<String> listGames(String authToken) throws DataAccessException{
         var path = "/game";
+        int counter = 1;
+        Collection<String> gameListPrint = new ArrayList<>();
         record ListGameResponse(GameData[] games){
         }
         var response = this.makeRequest("GET", path, null, authToken, ListGameResponse.class);
-        return response.games;
+        var games = response.games;
+        for(GameData game : games){
+            String listNum = String.valueOf(counter);
+            String gameName = game.gameName();
+            String gameID = String.valueOf(game.gameID());
+            String whiteUser = game.whiteUsername() == null ? "empty" : game.whiteUsername();
+            String blackUser = game.blackUsername() == null ? "empty" : game.blackUsername();
+            String formatted =listNum + " Gamename: " + gameName + "  gameID: " + gameID + "  White: " + whiteUser + "  Black: " + blackUser;
+            gameListPrint.add(formatted);
+            counter++;
+        }
+        return gameListPrint;
     }
 
     public void joinGame(int gameID, String color, String authToken) throws DataAccessException{

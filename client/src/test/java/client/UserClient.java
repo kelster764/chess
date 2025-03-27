@@ -8,6 +8,7 @@ import server.ServerFacade;
 import ui.ChessPrint;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class UserClient {
     private String visitorName = null;
@@ -102,18 +103,37 @@ public class UserClient {
 
     public String create(String... params) throws DataAccessException{
         assertSignedIn();
-        String gameName = params[0];
-        GameData gameData = sv.createGame(gameName, authToken);
-        int gameID = gameData.gameID();
-        return String.format("Your gameID is %d", gameID);
+        if (params.length == 1) {
+            try {
+                String gameName = params[0];
+                GameData gameData = sv.createGame(gameName, authToken);
+                int gameID = gameData.gameID();
+                return String.format("Your gameID is %d", gameID);
+            }catch (Exception ex) {
+                return ex.getMessage();
+                }
+        }
+        throw new DataAccessException("Expected gameName");
     }
 
     public String join(String... params) throws DataAccessException{
         assertSignedIn();
-        String gameColor = params[1];
-        ChessPrint chessBoard = new ChessPrint();
-        chessBoard.main(new String[]{gameColor});
-        return "play!";
+        if (params.length == 2) {
+            try {
+                String gameColor = params[1].toUpperCase();
+
+                int gameID = Integer.parseInt(params[0]);
+                //sv.joinGame(gameID, gameColor, authToken);
+                ChessPrint chessBoard = new ChessPrint();
+                chessBoard.main(new String[]{gameColor});
+                return "play!";
+            }catch(Exception ex){
+                if(Objects.equals(ex.getMessage(), "not null")){
+                    throw new DataAccessException("spot taken");
+                }
+            }
+        }
+        throw new DataAccessException("Expected number and color");
     }
 
 

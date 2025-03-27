@@ -7,6 +7,8 @@ import org.junit.jupiter.api.*;
 import server.Server;
 import server.ServerFacade;
 
+import java.util.Collection;
+
 
 public class ServerFacadeTests {
     private static String serverUrl;
@@ -165,7 +167,7 @@ public class ServerFacadeTests {
             sv.clear();
             AuthData authData = sv.register("urmom", "ishot", "blah");
             sv.createGame("bestGame", authData.authToken());
-            GameData[] gameData = sv.listGames(authData.authToken());
+            Collection<String> gameData= sv.listGames(authData.authToken());
             assert gameData != null;
             sv.clear();
 
@@ -181,7 +183,7 @@ public class ServerFacadeTests {
             sv.clear();
             AuthData authData = sv.register("urmom", "ishot", "blah");
             sv.createGame("bestGame", authData.authToken());
-            GameData[] gameData = sv.listGames(null);
+            Collection<String> gameData = sv.listGames(null);
             Assertions.fail();
             sv.clear();
 
@@ -197,6 +199,7 @@ public class ServerFacadeTests {
             AuthData authData = sv.register("urmom", "ishot", "blah");
             GameData gameData = sv.createGame("bestGame", authData.authToken());
             sv.joinGame(gameData.gameID(), "WHITE", authData.authToken());
+
 
         }catch(Exception ex){
             ex.getMessage();
