@@ -33,6 +33,7 @@ public class UserClient {
                 return switch (cmd) {
                     case "register" -> register(params);
                     case "login" -> login(params);
+                    case "quit" -> quit();
                     default -> help();
                 };
             }
@@ -43,6 +44,7 @@ public class UserClient {
                     case "list" -> list();
                     case "observe" -> observe(params);
                     case "join" -> join(params);
+                    case "quit" -> quit();
                     default -> help();
                 };
             }
@@ -52,9 +54,14 @@ public class UserClient {
         }
     }
 
+    private String quit() {
+        System.exit(0);
+        return "";
+    }
+
     private String observe(String... params) throws DataAccessException {
         ChessPrint chessBoard = new ChessPrint();
-        chessBoard.main(new String[]{});
+        chessBoard.main(new String[]{"white"});
         return "Board displayed";
     }
 
@@ -123,7 +130,7 @@ public class UserClient {
                 String gameColor = params[1].toUpperCase();
 
                 int gameID = Integer.parseInt(params[0]);
-                //sv.joinGame(gameID, gameColor, authToken);
+                sv.joinGame(gameID, gameColor, authToken);
                 ChessPrint chessBoard = new ChessPrint();
                 chessBoard.main(new String[]{gameColor});
                 return "play!";
