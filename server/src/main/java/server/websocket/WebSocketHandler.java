@@ -20,11 +20,14 @@ public class WebSocketHandler {
     public void onMessage(Session session, String message) throws IOException {
         UserGameCommand userGameCommand = new Gson().fromJson(message, UserGameCommand.class);
         switch (userGameCommand.getCommandType()){
-            case CONNECT -> ;
+            case CONNECT -> connect();
             case MAKE_MOVE -> ;
             case LEAVE -> ;
             case RESIGN -> ;
-            }
         }
     }
+    private void connect(){
+
+    }
+
 }
