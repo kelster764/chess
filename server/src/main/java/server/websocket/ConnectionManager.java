@@ -46,14 +46,18 @@ public class ConnectionManager {
 
     public void broadcast(Integer gameID, Session currentSession, Notification message) throws IOException {
         var idSessions = getSessionsForGame(gameID);
-        for (Session session : idSessions){
-            if (session.isOpen() && session!= currentSession){
-                String msg = message.toString();
-                session.getRemote().sendString(msg);
+        if(message.type() == Notification.Type.LOAD_GAME){
+            String msg = message.toString();
+            currentSession.getRemote().sendString(msg);
+        }
+        else if (message.type() == Notification.Type.NOTIFICATION) {
+            for (Map.Entry<Session, String> entry : idSessions.entrySet()) {
+                Session session = entry.getKey();
+                if (session.isOpen() && session != currentSession) {
+                    String msg = message.toString();
+                    session.getRemote().sendString(msg);
+                }
             }
         }
-
     }
-
-
 }

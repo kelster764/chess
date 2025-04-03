@@ -37,7 +37,7 @@ public class WebSocketHandler {
     private void connect(int gameID, Session session, String userName) throws IOException {
         connections.addSessionToGame(gameID, session, userName);
         var messageLoad = new Notification(Notification.Type.LOAD_GAME, "game loading");
-        var messageNotif = new Notification(Notification.Type.NOTIFICATION, "user joined");
+        var messageNotif = new Notification(Notification.Type.NOTIFICATION, String.format("%s has joined", userName));
         connections.broadcast(gameID, null, messageLoad);
         connections.broadcast(gameID, session, messageNotif);
     }
