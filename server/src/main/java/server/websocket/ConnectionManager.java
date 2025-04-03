@@ -44,20 +44,59 @@ public class ConnectionManager {
         return currentMap;
     }
 
-    public void broadcast(Integer gameID, Session currentSession, Notification message) throws IOException {
+//    public void broadcast(Integer gameID, Session currentSession, Notification message) throws IOException {
+//        var idSessions = getSessionsForGame(gameID);
+//        if(message.type() == Notification.Type.LOAD_GAME){
+//            String msg = message.toString();
+//            currentSession.getRemote().sendString(msg);
+//        }
+//        else if (message.type() == Notification.Type.NOTIFICATION) {
+//            for (Map.Entry<Session, String> entry : idSessions.entrySet()) {
+//                Session session = entry.getKey();
+//                if (session.isOpen() && session != currentSession) {
+//                    String msg = message.toString();
+//                    session.getRemote().sendString(msg);
+//                }
+//            }
+//        }
+//    }
+    public void broadcastConnect(Integer gameID, Session currentSession, Notification message) throws IOException {
+        var errorMessage = new Notification(Notification.Type.ERROR, "error");
         var idSessions = getSessionsForGame(gameID);
-        if(message.type() == Notification.Type.LOAD_GAME){
-            String msg = message.toString();
-            currentSession.getRemote().sendString(msg);
-        }
-        else if (message.type() == Notification.Type.NOTIFICATION) {
-            for (Map.Entry<Session, String> entry : idSessions.entrySet()) {
-                Session session = entry.getKey();
-                if (session.isOpen() && session != currentSession) {
-                    String msg = message.toString();
-                    session.getRemote().sendString(msg);
+        String msg = message.toString();
+        String error = errorMessage.toString();
+        if (idSessions != null) {
+            if (message.type() == Notification.Type.LOAD_GAME) {
+                currentSession.getRemote().sendString(msg);
+            } else if (message.type() == Notification.Type.NOTIFICATION) {
+                for (Map.Entry<Session, String> entry : idSessions.entrySet()) {
+                    Session session = entry.getKey();
+                    if (session.isOpen() && session != currentSession) {
+                        session.getRemote().sendString(msg);
+                    }
                 }
             }
+            }
+        else {
+            currentSession.getRemote().sendString(error);
+        }
+    }
+    public void broadcastResign(Integer gameID, Session currentSession, Notification message) throws IOException {
+        var errorMessage = new Notification(Notification.Type.ERROR, "error");
+        var idSessions = getSessionsForGame(gameID);
+        String msg = message.toString();
+        String error = errorMessage.toString();
+        if (idSessions != null) {
+            if (message.type() == Notification.Type.NOTIFICATION || message.type() == Notification.Type.LOAD_GAME) {
+                for (Map.Entry<Session, String> entry : idSessions.entrySet()) {
+                    Session session = entry.getKey();
+                    if (session.isOpen()) {
+                        session.getRemote().sendString(msg);
+                    }
+                }
+            }
+            } else {
+            currentSession.getRemote().sendString(error);
         }
     }
 }
