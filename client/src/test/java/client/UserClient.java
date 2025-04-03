@@ -60,6 +60,7 @@ public class UserClient {
     }
 
     private String observe(String... params) throws DataAccessException {
+
         ChessPrint chessBoard = new ChessPrint();
         chessBoard.main(new String[]{"white"});
         return "Board displayed";

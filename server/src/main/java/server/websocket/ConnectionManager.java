@@ -3,6 +3,7 @@ package server.websocket;
 import model.GameData;
 //import spark.Session;
 import org.eclipse.jetty.websocket.api.Session;
+import websocket.messages.Notification;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
@@ -24,13 +25,17 @@ public class ConnectionManager {
         currentSet.remove(session);
         sessionMap.put(gameID, currentSet);
     }
+    public void removeGame(Integer gameID){
+        sessionMap.remove(gameID);
+    }
+
 
     public Set<Session> getSessionsForGame(Integer gameID){
         Set<Session>currentSet = sessionMap.getOrDefault(gameID, Set.of());
         return currentSet;
     }
 
-    public void broadcast(Integer gameID, Session currentSession, ServerMessage message) throws IOException {
+    public void broadcast(Integer gameID, Session currentSession, Notification message) throws IOException {
         var idSessions = getSessionsForGame(gameID);
         for (Session session : idSessions){
             if (session.isOpen() && session!= currentSession){
