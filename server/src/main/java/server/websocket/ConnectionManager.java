@@ -1,8 +1,10 @@
 package server.websocket;
 
+import chess.ChessGame;
 import model.GameData;
 //import spark.Session;
 import org.eclipse.jetty.websocket.api.Session;
+import websocket.messages.LoadGame;
 import websocket.messages.Notification;
 import websocket.messages.ServerMessage;
 
@@ -60,27 +62,42 @@ public class ConnectionManager {
 //            }
 //        }
 //    }
-    public void broadcastConnect(Integer gameID, Session currentSession, Notification message) throws IOException {
-        var errorMessage = new Notification(Notification.Type.ERROR, "error");
+//    public void broadcastConnect(Integer gameID, Session currentSession, Notification message) throws IOException {
+//        var errorMessage = new Notification(Notification.Type.ERROR, "error");
+//        var idSessions = getSessionsForGame(gameID);
+//        String msg = message.toString();
+//        String error = errorMessage.toString();
+//        if (idSessions != null) {
+//            if (message.type() == Notification.Type.LOAD_GAME) {
+//                currentSession.getRemote().sendString(msg);
+//            } else if (message.type() == Notification.Type.NOTIFICATION) {
+//                for (Map.Entry<Session, String> entry : idSessions.entrySet()) {
+//                    Session session = entry.getKey();
+//                    if (session.isOpen() && session != currentSession) {
+//                        session.getRemote().sendString(msg);
+//                    }
+//                }
+//            }
+//            }
+//        else {
+//            currentSession.getRemote().sendString(error);
+//        }
+//    }
+        public void broadcastLoadGame(LoadGame loadGame, Session currentSession, String userName) throws IOException {
+        GameData gameData = loadGame.getGame();
+        ChessGame chess = gameData.game();
+        int gameID = loadGame.getGame().gameID();
         var idSessions = getSessionsForGame(gameID);
-        String msg = message.toString();
-        String error = errorMessage.toString();
-        if (idSessions != null) {
-            if (message.type() == Notification.Type.LOAD_GAME) {
-                currentSession.getRemote().sendString(msg);
-            } else if (message.type() == Notification.Type.NOTIFICATION) {
-                for (Map.Entry<Session, String> entry : idSessions.entrySet()) {
-                    Session session = entry.getKey();
-                    if (session.isOpen() && session != currentSession) {
-                        session.getRemote().sendString(msg);
-                    }
-                }
-            }
-            }
-        else {
-            currentSession.getRemote().sendString(error);
+//        String msg = message.toString();
+//        String error = errorMessage.toString();
+        if(chess.color == ChessGame.TeamColor.WHITE){
+            String message = String.format("it is %s turn", gameData.whiteUsername());
+
+
         }
     }
+
+
     public void broadcastResign(Integer gameID, Session currentSession, Notification message) throws IOException {
         var errorMessage = new Notification(Notification.Type.ERROR, "error");
         var idSessions = getSessionsForGame(gameID);

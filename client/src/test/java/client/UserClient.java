@@ -41,7 +41,8 @@ public class UserClient {
                     default -> help();
                 };
             }
-            else if(state == State.LOGGEDIN){
+//(state == State.LOGGEDIN)
+            else {
                 return switch (cmd) {
                     case "logout" -> logout();
                     case "create" -> create(params);
@@ -52,16 +53,16 @@ public class UserClient {
                     default -> help();
                 };
             }
-            else if(state == State.GAMEMODE){
-                return switch (cmd) {
-                    case "connect" -> connect();
-                    case "makeMove" -> makeMove(params);
-                    case "leave" -> leave();
-                    case "resign" -> resign();
-                    case "quit" -> quit();
-                    default -> help();
-                };
-            }
+//            else if(state == State.GAMEMODE){
+//                return switch (cmd) {
+//                    case "connect" -> connect();
+//                    case "makeMove" -> makeMove(params);
+//                    case "leave" -> leave();
+//                    case "resign" -> resign();
+//                    case "quit" -> quit();
+//                    default -> help();
+//                };
+//            }
 
         }catch(Exception ex) {
             return ex.getMessage();

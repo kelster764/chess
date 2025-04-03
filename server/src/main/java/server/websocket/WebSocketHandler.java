@@ -5,12 +5,14 @@ import com.google.gson.Gson;
 import dataaccess.AuthDAO;
 import dataaccess.MySqlAuthAccess;
 import model.AuthData;
+import model.GameData;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.eclipse.jetty.websocket.api.Session;
 
 import java.io.IOException;
 
+import websocket.messages.LoadGame;
 import websocket.messages.Notification;
 import websocket.messages.ServerMessage;
 import websocket.commands.UserGameCommand;
@@ -21,25 +23,28 @@ public class WebSocketHandler {
 
     private final ConnectionManager connections = new ConnectionManager();
     private AuthDAO authDao;
+    private GameDAO gameDAO;
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException, DataAccessException {
         UserGameCommand userGameCommand = new Gson().fromJson(message, UserGameCommand.class);
         AuthData authData = authDao.getAuth(userGameCommand.getAuthToken());
+        GameData gameData = gameDAO.getGame(userGameCommand.getGameID());
         String userName = authData.username();
         switch (userGameCommand.getCommandType()){
-            case CONNECT -> connect(userGameCommand.getGameID(), session, userName);
+            case CONNECT -> connect(gameData, session, userName);
             case MAKE_MOVE -> move(userGameCommand.getGameID(), session, userName);
             case LEAVE -> leave(userGameCommand.getGameID(), session, userName);
             case RESIGN -> resign(userGameCommand.getGameID(), session, userName);
         }
     }
-    private void connect(int gameID, Session session, String userName) throws IOException {
-        connections.addSessionToGame(gameID, session, userName);
-        var messageLoad = new Notification(Notification.Type.LOAD_GAME, "game loading");
-        var messageNotif = new Notification(Notification.Type.NOTIFICATION, String.format("%s has joined", userName));
-        connections.broadcastConnect(gameID, session, messageLoad);
-        connections.broadcastConnect(gameID, session, messageNotif);
+    private void connect(GameData gameData, Session session, String userName) throws IOException {
+        connections.addSessionToGame(gameData.gameID(), session, userName);
+        //var messageLoad = new Notification(Notification.Type.LOAD_GAME, "game loading");
+//        var messageNotif = new Notification(Notification.Type.NOTIFICATION, String.format("%s has joined", userName));
+        var messageLoad = new LoadGame(gameData);
+//        connections.broadcastConnect(gameData.gameID(), session, messageLoad);
+//        connections.broadcastConnect(gameData.gameID(), session, messageNotif);
     }
 
     private void move(int gameID, Session session, String userName) throws IOException {
