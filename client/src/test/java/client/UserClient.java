@@ -5,7 +5,9 @@ import model.AuthData;
 import model.GameData;
 import server.Server;
 import server.ServerFacade;
+import server.websocket.WebSocketHandler;
 import ui.ChessPrint;
+import server.websocket.WebSocketHandler;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -16,11 +18,13 @@ public class UserClient {
     private static String serverUrl;
     private static Server server;
     private static ServerFacade sv;
+    private static WebSocketHandler ws;
     public static State state = State.LOGGEDOUT;
 
 
     public UserClient(String serverUrl){
         sv = new ServerFacade(serverUrl);
+        ws = new WebSocketHandler();
         this.serverUrl = serverUrl;
     }
 
@@ -37,13 +41,23 @@ public class UserClient {
                     default -> help();
                 };
             }
-            else {
+            else if(state == State.LOGGEDIN){
                 return switch (cmd) {
                     case "logout" -> logout();
                     case "create" -> create(params);
                     case "list" -> list();
                     case "observe" -> observe(params);
                     case "join" -> join(params);
+                    case "quit" -> quit();
+                    default -> help();
+                };
+            }
+            else if(state == State.GAMEMODE){
+                return switch (cmd) {
+                    case "connect" -> connect();
+                    case "makeMove" -> makeMove(params);
+                    case "leave" -> leave();
+                    case "resign" -> resign();
                     case "quit" -> quit();
                     default -> help();
                 };

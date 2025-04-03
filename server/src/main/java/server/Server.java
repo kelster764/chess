@@ -1,5 +1,5 @@
 package server;
-
+import server.websocket.WebSocketHandler;
 import com.google.gson.Gson;
 import dataaccess.*;
 //import dataaccess.MemoryDataAccess;
@@ -18,7 +18,7 @@ import java.util.Map;
 //import static dataaccess.DatabaseManager.configureDatabase();
 
 public class Server {
-
+    private final WebSocketHandler webSocketHandler;
     private final ClearService clearService;
     private final RegisterService registerService;
     private final LoginService loginService;
@@ -33,7 +33,7 @@ public class Server {
 
     public Server() {
 
-
+        webSocketHandler = new WebSocketHandler();
         try{
             this.authDao = new MySqlAuthAccess();
             this.gameDao = new MySqlGameAccess();
