@@ -79,11 +79,16 @@ public class WebSocketHandler {
             ChessMoveCommand chessMoveCommand = new Gson().fromJson(message, ChessMoveCommand.class);
             //GameData chessCurrentGame = gameDAO.getGame(gameData.gameID());
             //ChessGame chessGame = chessCurrentGame.game();
+
             String userName = authData.username();
+
             ChessGame chessGame = gameData.game();
+            boolean isTurnWhite = Objects.equals(userName, gameData.whiteUsername()) && chessGame.color == ChessGame.TeamColor.WHITE;
+            boolean isTurnBlack = Objects.equals(userName, gameData.blackUsername()) && chessGame.color == ChessGame.TeamColor.BLACK;
+            boolean isNotObserver = Objects.equals(userName, gameData.whiteUsername()) || Objects.equals(userName, gameData.blackUsername());
             ChessMove chessMove = chessMoveCommand.getMove();
-            if(!chessGame.isGameOver()) {
-                if(Objects.equals(userName, gameData.whiteUsername()) || Objects.equals(userName, gameData.blackUsername())) {
+            if(!chessGame.isGameOver() && (isTurnBlack || isTurnWhite)) {
+                if(isNotObserver) {
                     chessGame.makeMove(chessMove);
                     gameDAO.updateGame(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), chessGame);
                     GameData updated_game = gameDAO.getGame(gameData.gameID());
@@ -148,13 +153,19 @@ public class WebSocketHandler {
         try{
             ChessGame chessGame = gameData.game();
             int gameID = gameData.gameID();
-            chessGame.Resign();
-            gameDAO.updateGame(gameID, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), chessGame);
-            Notification notification = new Notification(String.format("%s has resigned", authData.username()));
-            connections.broadcast(gameID, session, notification);
-            connections.broadcastToRoot(notification,session);
-            //connections.removeGame(gameID);
-
+            String userName = authData.username();
+            boolean isNotObserver = Objects.equals(userName, gameData.whiteUsername()) || Objects.equals(userName, gameData.blackUsername());
+            if(!chessGame.isGameOver() && isNotObserver) {
+                chessGame.Resign();
+                gameDAO.updateGame(gameID, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), chessGame);
+                Notification notification = new Notification(String.format("%s has resigned", authData.username()));
+                connections.broadcast(gameID, session, notification);
+                connections.broadcastToRoot(notification, session);
+                //connections.removeGame(gameID);
+            }
+            else{
+                connections.broadcastToRoot(new Error("error: cannot resign"), session);
+            }
 
         }catch(Exception ex){
             connections.broadcastToRoot(new Error("error:" + ex.getMessage()), session);
