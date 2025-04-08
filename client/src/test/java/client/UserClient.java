@@ -24,7 +24,7 @@ public class UserClient {
 
     public UserClient(String serverUrl){
         sv = new ServerFacade(serverUrl);
-        ws = new WebSocketHandler();
+        //ws = new WebSocketHandler();
         this.serverUrl = serverUrl;
     }
 

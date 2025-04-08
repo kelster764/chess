@@ -18,10 +18,10 @@ public class MySqlGameAccess implements GameDAO{
 
     public GameData createGame(GameData game) throws DataAccessException {
         var statement = "INSERT INTO gameData (whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?)";
-        var json = new Gson().toJson(game.game());
+        var json = new Gson().toJson(new ChessGame());
         var gameID = DatabaseManager.executeUpdate(statement, game.whiteUsername(), game.blackUsername(), game.gameName(), json);
 //        var gameID = executeUpdate(statement, game.whiteUsername(), game.blackUsername(), game.gameName(), json);
-        return new GameData(gameID, game.whiteUsername(), game.blackUsername(), game.gameName(), game.game());
+        return new GameData(gameID, game.whiteUsername(), game.blackUsername(), game.gameName(), new ChessGame());
     }
 
     public void clearGames() throws DataAccessException {
@@ -38,8 +38,9 @@ public class MySqlGameAccess implements GameDAO{
 public void updateGame(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame chessGame) throws DataAccessException{
     //GameData game = new GameData(gameID, whiteUsername, blackUsername, gameName, chessGame);
     deleteGame(gameID);
+    var json = new Gson().toJson(chessGame);
     var statement = "INSERT INTO gameData (gameID, whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?, ?)";
-    DatabaseManager.executeUpdate(statement, gameID, whiteUsername, blackUsername, gameName, chessGame);
+    DatabaseManager.executeUpdate(statement, gameID, whiteUsername, blackUsername, gameName, json);
 
 }
 
@@ -86,6 +87,9 @@ public void updateGame(int gameID, String whiteUsername, String blackUsername, S
             var gameName = rs.getString("gameName");
             var json = rs.getString("game");
             var game = new Gson().fromJson(json, ChessGame.class);
+//            if(game == null){
+//                game = new ChessGame();
+//            }
             var read = new GameData(gameID, whiteUsername, blackUsername, gameName, game);
             return read;
         }catch (Exception e) {

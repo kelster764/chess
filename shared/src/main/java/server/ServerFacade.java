@@ -1,4 +1,5 @@
 package server;
+import chess.ChessGame;
 import com.google.gson.Gson;
 import model.*;
 import exception.DataAccessException;
@@ -41,7 +42,7 @@ public class ServerFacade {
 
     public GameData createGame(String gameName, String authToken) throws DataAccessException{
         var path = "/game";
-        GameData game = new GameData(0, null, null, gameName, null);
+        GameData game = new GameData(0, null, null, gameName, new ChessGame());
         return this.makeRequest("POST", path, game, authToken, GameData.class);
     }
     
