@@ -43,8 +43,9 @@ public class ChessPrint {
             else{
                 color = "WHITE";
             }
-            String chessJson = args[1];
-            chess = new Gson().fromJson(chessJson, ChessGame.class);
+            //String chessJson = args[1];
+            //chess = new Gson().fromJson(chessJson, ChessGame.class);
+            ChessGame chess = new ChessGame();
             chessBoard = chess.getBoard();
         }
 
@@ -97,14 +98,16 @@ public class ChessPrint {
         int colEnd = Objects.equals(color, "WHITE") ? 8 : 1;
         int colStep = Objects.equals(color, "WHITE")  ? 1 : -1;
 
-
-
+        String blankPiece = "   ";
+        String rowLabel = String.format(" "+String.valueOf(String.valueOf(boardRow)+ " "));
         setMagenta(out);
-        //printPlayer(out, blackPieces[0], false);
+        printPlayer(out, rowLabel, ChessGame.TeamColor.BLACK);
         int startSquare = boardRow % 2;
         for (int boardCol = colStart; boardCol != colEnd + colStep; boardCol+= colStep) {
             ChessPosition chessPosition = new ChessPosition(boardRow, boardCol);
             ChessPiece chessPiece = chessBoard.getPiece(chessPosition);
+            //String rowLabel = String.format(" "+String.valueOf(String.valueOf(boardRow)+ " "));
+
             if (startSquare % 2 == 1 &&  Objects.equals(color, "WHITE")){
                     setGray(out);
                 }
@@ -114,24 +117,49 @@ public class ChessPrint {
                 else{
                     setWhite(out);
                 }
+            if(chessPiece != null) {
                 printPlayer(out, chessPiece.getPieceType().toString(), chessPiece.getTeamColor());
+            }
+            else{
+                printPlayer(out, blankPiece, ChessGame.TeamColor.BLACK);
+            }
 
             startSquare++;
         }
         setMagenta(out);
-        //printPlayer(out, blackPieces[BOARD_SIZE_IN_SQUARES - 1], false);
+        printPlayer(out, rowLabel, ChessGame.TeamColor.BLACK);
         setDef(out);
 
         out.println();
     }
     private static void printPlayer(PrintStream out, String player, ChessGame.TeamColor teamColor) {
+
         Boolean isWhite = teamColor == ChessGame.TeamColor.WHITE;
         if(isWhite){
             out.print(SET_TEXT_COLOR_BLUE);
         }else {
             out.print(SET_TEXT_COLOR_BLACK);
         }
-        out.print(player);
+        String out_player = player;
+        if(Objects.equals(player, "KING")){
+            out_player = KING;
+        }
+        else if(Objects.equals(player, "QUEEN")){
+            out_player = QUEEN;
+        }
+        else if(Objects.equals(player, "BISHOP")){
+            out_player = BISHOP;
+        }
+        else if(Objects.equals(player, "KNIGHT")){
+            out_player = KNIGHT;
+        }
+        else if(Objects.equals(player, "ROOK")){
+            out_player = ROOK;
+        }
+        else if(Objects.equals(player, "PAWN")){
+            out_player = PAWN;
+        }
+        out.print(out_player);
     }
 //    private static void drawRowOfSquares(PrintStream out, int boardRow, ChessBoard chessBoard) {
 //        int colStart = Objects.equals(color, "WHITE") ? 1 : 8;
