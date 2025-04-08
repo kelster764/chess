@@ -1,15 +1,11 @@
 package websocket.messages;
 
-import com.google.gson.Gson;
+import model.GameData;
 
-public record Notification(Type type, String message) {
-    public enum Type {
-        LOAD_GAME,
-        ERROR,
-        NOTIFICATION
+public class Notification extends ServerMessage{
+    String message;
+    public Notification(String message){
+        super(ServerMessageType.NOTIFICATION);
+        this.message = message;
     }
-    public String toString() {
-        return new Gson().toJson(this);
-    }
-
 }

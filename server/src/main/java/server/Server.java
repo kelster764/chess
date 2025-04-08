@@ -10,6 +10,7 @@ import dataaccess.MemoryUserAccess;
 import model.*;
 import service.*;
 import spark.*;
+import websocket.commands.UserGameCommand;
 
 import java.sql.SQLException;
 import java.util.Collection;
@@ -33,7 +34,7 @@ public class Server {
 
     public Server() {
 
-        webSocketHandler = new WebSocketHandler();
+
         try{
             this.authDao = new MySqlAuthAccess();
             this.gameDao = new MySqlGameAccess();
@@ -46,6 +47,7 @@ public class Server {
         }catch(DataAccessException e) {
             this.userDao = new MemoryUserAccess();
         }
+        this.webSocketHandler = new WebSocketHandler(authDao, gameDao);
         this.clearService = new ClearService(gameDao, authDao, userDao);
         this.registerService = new RegisterService(authDao, userDao);
         this.loginService = new LoginService(authDao, userDao);
@@ -60,7 +62,7 @@ public class Server {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
-
+        Spark.webSocket("/ws", webSocketHandler);
         Spark.delete("/db", this::clear);
 
         Spark.post("/user", this::register);
@@ -74,6 +76,8 @@ public class Server {
         Spark.post("/game", this::createGame);
 
         Spark.put("/game", this::joinGame);
+
+
 
         // Register your endpoints and handle exceptions here.
 
@@ -189,8 +193,10 @@ public class Server {
         String auth = req.headers("Authorization");
         String body = req.body();
         ColorData jbody = new Gson().fromJson(body, ColorData.class);
+        //UserGameCommand userGameCommand = new UserGameCommand(websocket.commands.UserGameCommand.CommandType.CONNECT, auth ,jbody.gameID());
         try{
             joinGameService.joinGame(auth, jbody);
+            //webSocketHandler.onMessage( ,userGameCommand);
             res.status(200);
             return "{}";
         } catch (Exception ex){

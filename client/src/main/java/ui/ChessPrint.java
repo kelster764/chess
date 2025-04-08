@@ -1,4 +1,8 @@
 package ui;
+import chess.ChessBoard;
+import chess.ChessGame;
+import com.google.gson.Gson;
+
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -27,6 +31,8 @@ public class ChessPrint {
     public static final String BLACK_PAWN = " P ";
     public static final String EMPTY = " \u2003 ";
     public static String color = "WHITE";
+    public static ChessGame chess = new ChessGame();
+    public static ChessBoard chessBoard = new ChessBoard();
 
 
     public static void main(String[] args) {
@@ -41,6 +47,9 @@ public class ChessPrint {
             else{
                 color = "WHITE";
             }
+            String chessJson = args[1];
+            chess = new Gson().fromJson(chessJson, ChessGame.class);
+            chessBoard = chess.getBoard();
         }
 
         drawHeaders(out);
@@ -83,11 +92,11 @@ public class ChessPrint {
         int colStep = Objects.equals(color, "WHITE")  ? -1 : 1;
 
         for (int startRow = colStart; startRow != colEnd; startRow+= colStep) {
-            drawRowOfSquares(out, startRow);
+            drawRowOfSquares(out, startRow, chessBoard);
         }
     }
 
-    private static void drawRowOfSquares(PrintStream out, int boardRow) {
+    private static void drawRowOfSquares(PrintStream out, int boardRow, ChessBoard chessBoard) {
         int colStart = Objects.equals(color, "WHITE") ? 1 : 8;
         int colEnd = Objects.equals(color, "WHITE") ? 8 : 1;
         int colStep = Objects.equals(color, "WHITE")  ? 1 : -1;
