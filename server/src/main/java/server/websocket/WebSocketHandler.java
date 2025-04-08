@@ -51,7 +51,7 @@ public class WebSocketHandler {
             case CONNECT -> connect(gameData, session, authData);
             case MAKE_MOVE -> move(gameData, session, authData, message);
             case LEAVE -> leave(gameData, session, authData);
-            case RESIGN -> resign(gameData, session, userName);
+            case RESIGN -> resign(gameData, session, authData);
         }
     }
     private void connect(GameData gameData, Session session, AuthData authData) throws IOException {
@@ -77,23 +77,36 @@ public class WebSocketHandler {
     private void move(GameData gameData, Session session, AuthData authData,String message) throws IOException {
         try{
             ChessMoveCommand chessMoveCommand = new Gson().fromJson(message, ChessMoveCommand.class);
+            //GameData chessCurrentGame = gameDAO.getGame(gameData.gameID());
+            //ChessGame chessGame = chessCurrentGame.game();
+            String userName = authData.username();
             ChessGame chessGame = gameData.game();
             ChessMove chessMove = chessMoveCommand.getMove();
-            chessGame.makeMove(chessMove);
-            gameDAO.updateGame(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), chessGame);
-            GameData updated_game = gameDAO.getGame(gameData.gameID());
-            LoadGame loadGame = new LoadGame(updated_game);
-            connections.broadcastToRoot(loadGame, session);
-            connections.broadcast(gameData.gameID(), session, loadGame);
-            if(chessGame.isInCheck(chessGame.color) || chessGame.isInCheckmate(chessGame.color) || chessGame.isInStalemate(chessGame.color)){
-                Notification notification = new  Notification("user is in trouble");
-                connections.broadcast(gameData.gameID(), session, notification);
-                connections.broadcastToRoot(notification, session);
+            if(!chessGame.isGameOver()) {
+                if(Objects.equals(userName, gameData.whiteUsername()) || Objects.equals(userName, gameData.blackUsername())) {
+                    chessGame.makeMove(chessMove);
+                    gameDAO.updateGame(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), chessGame);
+                    GameData updated_game = gameDAO.getGame(gameData.gameID());
+                    LoadGame loadGame = new LoadGame(updated_game);
+                    connections.broadcastToRoot(loadGame, session);
+                    connections.broadcast(gameData.gameID(), session, loadGame);
+                    if (chessGame.isInCheck(chessGame.color) || chessGame.isInCheckmate(chessGame.color) || chessGame.isInStalemate(chessGame.color)) {
+                        Notification notification = new Notification("user is in trouble");
+                        connections.broadcast(gameData.gameID(), session, notification);
+                        connections.broadcastToRoot(notification, session);
+
+                    }
+                    Notification notification = new Notification("user made move");
+                    connections.broadcast(gameData.gameID(), session, notification);
+                }
+                else{
+                    connections.broadcastToRoot(new Error("error: observer cannot move"), session);
+                }
+            }
+            else{
+                connections.broadcastToRoot(new Error("error: game is already over"), session);
 
             }
-            Notification notification = new Notification("user made move");
-            connections.broadcast(gameData.gameID(), session, notification);
-
 
 
         }catch(Exception ex){
@@ -131,7 +144,21 @@ public class WebSocketHandler {
         //connections.broadcastConnect(gameID, session, messageNotif);
     }
 
-    private void resign(GameData gameData, Session session, String userName) throws IOException {
+    private void resign(GameData gameData, Session session, AuthData authData) throws IOException {
+        try{
+            ChessGame chessGame = gameData.game();
+            int gameID = gameData.gameID();
+            chessGame.Resign();
+            gameDAO.updateGame(gameID, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), chessGame);
+            Notification notification = new Notification(String.format("%s has resigned", authData.username()));
+            connections.broadcast(gameID, session, notification);
+            connections.broadcastToRoot(notification,session);
+            //connections.removeGame(gameID);
+
+
+        }catch(Exception ex){
+            connections.broadcastToRoot(new Error("error:" + ex.getMessage()), session);
+        }
         //connections.removeGame(gameID);
 
         //var messageNotif = new Notification(Notification.Type.NOTIFICATION, String.format("%s has resigned", userName));
