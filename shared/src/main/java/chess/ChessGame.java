@@ -12,11 +12,13 @@ import java.util.Collection;
 public class ChessGame {
     private ChessBoard board;
     public TeamColor color;
+    private boolean gameOver;
 
     public ChessGame() {
         board = new ChessBoard();
         board.resetBoard();
         this.color = TeamColor.WHITE;
+        this.gameOver = false;
 
     }
 
@@ -185,11 +187,32 @@ public class ChessGame {
         return !isInCheck(teamColor) && validmoves.isEmpty();
     }
 
+    public void Resign(){
+        gameOver = true;
+    }
+
+    public Boolean isGameOver(){
+        if (isInCheckmate(TeamColor.BLACK)){
+            gameOver = true;
+        }
+        if (isInCheckmate(TeamColor.WHITE)){
+            gameOver = true;
+        }
+        if (isInStalemate(TeamColor.BLACK)){
+            gameOver = true;
+        }
+        if (isInStalemate(TeamColor.WHITE)){
+            gameOver = true;
+        }
+        return gameOver;
+
+    }
     /**
      * Sets this game's chessboard with a given board
      *
      * @param board the new board to use
      */
+
     public void setBoard(ChessBoard board) {
         this.board = board;
     }
