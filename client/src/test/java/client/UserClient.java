@@ -1,5 +1,7 @@
 package client;
 import com.google.gson.Gson;
+import dataaccess.AuthDAO;
+import dataaccess.GameDAO;
 import exception.DataAccessException;
 import model.AuthData;
 import model.GameData;
@@ -20,11 +22,13 @@ public class UserClient {
     private static ServerFacade sv;
     private static WebSocketHandler ws;
     public static State state = State.LOGGEDOUT;
+    public static GameDAO gameDAO;
+    public static AuthDAO authDAO;
 
 
     public UserClient(String serverUrl){
         sv = new ServerFacade(serverUrl);
-        //ws = new WebSocketHandler();
+        ws = new WebSocketHandler(authDAO, gameDAO);
         this.serverUrl = serverUrl;
     }
 
