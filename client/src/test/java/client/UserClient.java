@@ -10,10 +10,15 @@ import server.ServerFacade;
 import server.websocket.WebSocketHandler;
 import ui.ChessPrint;
 import server.websocket.WebSocketHandler;
+import ui.ServerMessageHandler;
+import ui.WebSocketFacade;
 import websocket.commands.UserGameCommand;
 //import org.eclipse.jetty.websocket.api.Session;
 
 import javax.imageio.IIOException;
+import javax.websocket.DeploymentException;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -23,15 +28,19 @@ public class UserClient {
     private static String serverUrl;
     private static Server server;
     private static ServerFacade sv;
-    private static WebSocketHandler ws;
+
+    //private static WebSocketHandler ws;
+    private WebSocketFacade ws;
     public static State state = State.LOGGEDOUT;
     public static GameDAO gameDAO;
     public static AuthDAO authDAO;
 
 
-    public UserClient(String serverUrl){
+    public UserClient(String serverUrl, Repl repl) throws DeploymentException, URISyntaxException, IOException, DataAccessException {
         sv = new ServerFacade(serverUrl);
-        ws = new WebSocketHandler(authDAO, gameDAO);
+        //ws = new WebSocketHandler(authDAO, gameDAO);
+
+        ws = new WebSocketFacade(serverUrl, repl);
         this.serverUrl = serverUrl;
     }
 
@@ -81,13 +90,14 @@ public class UserClient {
         return "";
     }
 
-    private String observe(String... params) throws DataAccessException, dataaccess.DataAccessException{
+    private String observe(String... params) throws DataAccessException, IOException {
         Gson gson = new Gson();
         int gameID = Integer.parseInt(params[0]);
         GameData gameData = sv.getGame(gameID, authToken);
         state = State.GAMEMODE;
         UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
         String userJson = gson.toJson(userGameCommand);
+        ws.send(userJson);
 
         //ws.onMessage(serverUrl, userGameCommand);
 
