@@ -179,6 +179,10 @@ public class WebSocketHandler {
         //I need to stop people from playing somehow...
     }
 
+    public void send(Session session, String msg) throws IOException {
+        session.getRemote().sendString(msg);
+    }
+
 
 
 }

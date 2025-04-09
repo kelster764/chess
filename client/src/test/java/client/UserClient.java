@@ -10,7 +10,10 @@ import server.ServerFacade;
 import server.websocket.WebSocketHandler;
 import ui.ChessPrint;
 import server.websocket.WebSocketHandler;
+import websocket.commands.UserGameCommand;
+//import org.eclipse.jetty.websocket.api.Session;
 
+import javax.imageio.IIOException;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -46,7 +49,7 @@ public class UserClient {
                 };
             }
 //(state == State.LOGGEDIN)
-            else {
+            else if (state == State.LOGGEDIN){
                 return switch (cmd) {
                     case "logout" -> logout();
                     case "create" -> create(params);
@@ -57,16 +60,16 @@ public class UserClient {
                     default -> help();
                 };
             }
-//            else if(state == State.GAMEMODE){
-//                return switch (cmd) {
-//                    case "connect" -> connect();
-//                    case "makeMove" -> makeMove(params);
-//                    case "leave" -> leave();
-//                    case "resign" -> resign();
-//                    case "quit" -> quit();
-//                    default -> help();
-//                };
-//            }
+            else{
+                return switch (cmd) {
+                    //case "redraw" -> redrawBoard();
+                    //case "leave" -> leave(params);
+                    //case "move" -> MakeMove();
+                    //case "resign" -> resign();
+                    //case "highlight" -> highlight();
+                    default -> help();
+                };
+            }
 
         }catch(Exception ex) {
             return ex.getMessage();
@@ -78,10 +81,17 @@ public class UserClient {
         return "";
     }
 
-    private String observe(String... params) throws DataAccessException, dataaccess.DataAccessException {
+    private String observe(String... params) throws DataAccessException, dataaccess.DataAccessException{
         Gson gson = new Gson();
         int gameID = Integer.parseInt(params[0]);
         GameData gameData = sv.getGame(gameID, authToken);
+        state = State.GAMEMODE;
+        UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
+        String userJson = gson.toJson(userGameCommand);
+
+        //ws.onMessage(serverUrl, userGameCommand);
+
+
         String json = gson.toJson(gameData);
         ChessPrint chessBoard = new ChessPrint();
         chessBoard.main(new String[]{"white", json});
@@ -150,12 +160,25 @@ public class UserClient {
         assertSignedIn();
         if (params.length == 2) {
             try {
+                Gson gson = new Gson();
                 String gameColor = params[1].toUpperCase();
 
                 int gameID = Integer.parseInt(params[0]);
                 sv.joinGame(gameID, gameColor, authToken);
+
+                GameData gameData = sv.getGame(gameID, authToken);
+
+                //String userJson = gson.toJson(userGameCommand);
+
+                //ws.onMessage(serverUrl, userGameCommand);
+
+
+                String json = gson.toJson(gameData);
                 ChessPrint chessBoard = new ChessPrint();
-                chessBoard.main(new String[]{gameColor});
+                chessBoard.main(new String[]{gameColor, json});
+
+                state = State.GAMEMODE;
+
                 return "play!";
             }catch(Exception ex){
                 if(Objects.equals(ex.getMessage(), "not null")){
@@ -190,6 +213,16 @@ public class UserClient {
                     help - with possible commands
                     """;
         }
+        if (state == State.GAMEMODE) {
+            return """
+                    redraw - to redraw board
+                    leave - to leave game
+                    move - makeMove
+                    resign - resign
+                    highlight - highlight
+                    """;
+        }
+
         return """
                 create <NAME> - a game
                 list - games
