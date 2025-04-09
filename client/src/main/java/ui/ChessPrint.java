@@ -43,9 +43,9 @@ public class ChessPrint {
             else{
                 color = "WHITE";
             }
-            //String chessJson = args[1];
-            //chess = new Gson().fromJson(chessJson, ChessGame.class);
-            ChessGame chess = new ChessGame();
+            String chessJson = args[1];
+            chess = new Gson().fromJson(chessJson, ChessGame.class);
+            //ChessGame chess = new ChessGame();
             chessBoard = chess.getBoard();
         }
 

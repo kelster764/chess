@@ -67,20 +67,20 @@ public class ServerFacade {
         return gameListPrint;
     }
 
-//    public GameData getGame(int gameID, String authToken) throws DataAccessException{
-//        var path = "/game";
-//        //GameData gameData = new GameData();
-//        record ListGameResponse(GameData[] games){
-//        }
-//        var response = this.makeRequest("GET", path, null, authToken, ListGameResponse.class);
-//        var games = response.games;
-//        for(GameData game : games){
-//            if(game.gameID() == gameID){
-//                return game;
-//            }
-//        }
-//        return null;
-//    }
+    public GameData getGame(int gameID, String authToken) throws DataAccessException{
+        var path = "/game";
+        //GameData gameData = new GameData();
+        record ListGameResponse(GameData[] games){
+        }
+        var response = this.makeRequest("GET", path, null, authToken, ListGameResponse.class);
+        var games = response.games;
+        for(GameData game : games){
+            if(game.gameID() == gameID){
+                return game;
+            }
+        }
+        return null;
+    }
 
     public void joinGame(int gameID, String color, String authToken) throws DataAccessException{
         var path = "/game";

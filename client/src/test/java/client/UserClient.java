@@ -78,10 +78,13 @@ public class UserClient {
         return "";
     }
 
-    private String observe(String... params) throws DataAccessException {
-
+    private String observe(String... params) throws DataAccessException, dataaccess.DataAccessException {
+        Gson gson = new Gson();
+        int gameID = Integer.parseInt(params[0]);
+        GameData gameData = sv.getGame(gameID, authToken);
+        String json = gson.toJson(gameData);
         ChessPrint chessBoard = new ChessPrint();
-        chessBoard.main(new String[]{"white"});
+        chessBoard.main(new String[]{"white", json});
         return "Board displayed";
     }
 
