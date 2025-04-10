@@ -32,6 +32,7 @@ public class UserClient {
     //private static WebSocketHandler ws;
     private WebSocketFacade ws;
     public static State state = State.LOGGEDOUT;
+    public String color;
     public static GameDAO gameDAO;
     public static AuthDAO authDAO;
 
@@ -42,6 +43,7 @@ public class UserClient {
 
         ws = new WebSocketFacade(serverUrl, repl);
         this.serverUrl = serverUrl;
+        this.color = "white";
     }
 
     public String eval(String input){
@@ -91,9 +93,10 @@ public class UserClient {
     }
 
     private String observe(String... params) throws DataAccessException, IOException {
+        color = "white";
         Gson gson = new Gson();
         int gameID = Integer.parseInt(params[0]);
-        GameData gameData = sv.getGame(gameID, authToken);
+        //GameData gameData = sv.getGame(gameID, authToken);
         state = State.GAMEMODE;
         UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
         String userJson = gson.toJson(userGameCommand);
@@ -102,9 +105,9 @@ public class UserClient {
         //ws.onMessage(serverUrl, userGameCommand);
 
 
-        String json = gson.toJson(gameData);
-        ChessPrint chessBoard = new ChessPrint();
-        chessBoard.main(new String[]{"white", json});
+//        String json = gson.toJson(gameData);
+//        ChessPrint chessBoard = new ChessPrint();
+//        chessBoard.main(new String[]{"white", json});
         return "Board displayed";
     }
 

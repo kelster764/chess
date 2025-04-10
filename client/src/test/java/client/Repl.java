@@ -1,6 +1,10 @@
 package client;
 
+import chess.ChessGame;
+import com.google.gson.Gson;
 import exception.DataAccessException;
+import model.GameData;
+import ui.ChessPrint;
 import ui.ServerMessageHandler;
 import websocket.messages.LoadGame;
 import websocket.messages.Notification;
@@ -49,14 +53,22 @@ public class Repl implements ServerMessageHandler {
     }
 
     @Override
-    public void notify(Notification serverMessage) {
-        String realMessage = serverMessage.getMessage();
+    public void notify(Notification notification) {
+        String realMessage = notification.getMessage();
         System.out.println(realMessage);
         printPrompt();
     }
 
     @Override
     public void load(LoadGame loadGame) {
+        String color = client.color;
+        Gson gson = new Gson();
+        GameData game = loadGame.getGame();
+        ChessGame chessGame = game.game();
+        String json = gson.toJson(chessGame);
+        ChessPrint chessPrint = new ChessPrint();
+        System.out.println(String.format("game %d", game.gameID()));
+        chessPrint.main(new String[]{color, json});
 
     }
 
