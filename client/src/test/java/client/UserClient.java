@@ -272,7 +272,7 @@ public class UserClient {
         ChessMoveCommand chessMoveCommand = new ChessMoveCommand(authToken, gameID, chessMove);
         String userJson = gson.toJson(chessMoveCommand);
         ws.send(userJson);
-        return "you have moved";
+        return "";
 
     }
 
