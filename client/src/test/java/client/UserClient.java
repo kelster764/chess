@@ -78,7 +78,7 @@ public class UserClient {
                     //case "redraw" -> redrawBoard();
                     case "leave" -> leave();
                     //case "move" -> MakeMove();
-                    //case "resign" -> resign();
+                    case "resign" -> resign();
                     //case "highlight" -> highlight();
                     default -> help();
                 };
@@ -209,6 +209,16 @@ public class UserClient {
         state = State.LOGGEDIN;
         return "you have left game";
     }
+
+    public String resign() throws DataAccessException, IOException {
+        Gson gson = new Gson();
+        UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID);
+        String userJson = gson.toJson(userGameCommand);
+        ws.send(userJson);
+        state = State.LOGGEDIN;
+        return "you have resigned";
+    }
+
 
 
 

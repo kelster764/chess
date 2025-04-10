@@ -69,11 +69,14 @@ public class Repl implements ServerMessageHandler {
         ChessPrint chessPrint = new ChessPrint();
         System.out.println(String.format("game %d", game.gameID()));
         chessPrint.main(new String[]{color, json});
+        printPrompt();
 
     }
 
     @Override
     public void error(Error error) {
-
+        String realMessage = error.getMessage();
+        System.out.println(realMessage);
+        printPrompt();
     }
 }
