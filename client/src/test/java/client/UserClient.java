@@ -214,6 +214,7 @@ public class UserClient {
         ws.send(userJson);
         state = State.LOGGEDIN;
         return "you have left game";
+        //leave gets unhappy if I try to leave a game where I am both users
     }
 
     public String resign() throws DataAccessException, IOException {
@@ -228,28 +229,30 @@ public class UserClient {
     private String MakeMove(String[] params) throws IOException {
         String start = params[0];
         String end = params[1];
-        String promotion = params[2];
+        String promotion = null;
+        if(params.length > 2) {
+            promotion = params[2];
+        }
         ChessPiece chessPiece = null;
 
-        if(promotion.equalsIgnoreCase("queen")){
-            chessPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN);
-        }
-        else if(promotion.equalsIgnoreCase("bishop")){
-            chessPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP);
-        }
-        else if(promotion.equalsIgnoreCase("rook")){
-            chessPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
-        }
-        else if(promotion.equalsIgnoreCase("knight")){
-            chessPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
+        if(promotion != null) {
+            if (promotion.equalsIgnoreCase("queen")) {
+                chessPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN);
+            } else if (promotion.equalsIgnoreCase("bishop")) {
+                chessPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP);
+            } else if (promotion.equalsIgnoreCase("rook")) {
+                chessPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
+            } else if (promotion.equalsIgnoreCase("knight")) {
+                chessPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
+            }
         }
 
 
-        int startRow = start.charAt(0) - 'a';
-        int startCol = Character.getNumericValue(start.charAt(1));
+        int startCol = start.charAt(0) - 'a' + 1;
+        int startRow = Character.getNumericValue(start.charAt(1));
 
-        int endRow = end.charAt(0) - 'a';
-        int endCol = Character.getNumericValue(end.charAt(1));
+        int endCol = end.charAt(0) - 'a' + 1;
+        int endRow = Character.getNumericValue(end.charAt(1));
 
         ChessPosition startPosition = new ChessPosition(startRow, startCol);
         ChessPosition endPosition = new ChessPosition(endRow, endCol);

@@ -137,7 +137,7 @@ public class WebSocketHandler {
                 gameDAO.updateGame(gameID, gameData.whiteUsername(), null, gameData.gameName(), gameData.game());
             }
             else if(Objects.equals(authData.username(), gameData.whiteUsername())){
-                gameDAO.updateGame(gameID, null, gameData.whiteUsername(), gameData.gameName(), gameData.game());
+                gameDAO.updateGame(gameID, null, gameData.blackUsername(), gameData.gameName(), gameData.game());
             }
             Notification notification = new Notification(String.format("%s has left", authData.username()));
             connections.broadcast(gameID, session, notification);
