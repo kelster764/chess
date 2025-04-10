@@ -3,6 +3,7 @@ package ui;
 import com.google.gson.Gson;
 import exception.DataAccessException;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGame;
 import websocket.messages.Notification;
 import websocket.messages.ServerMessage;
@@ -40,8 +41,8 @@ public class WebSocketFacade extends Endpoint {
                     serverMessageHandler.load(loadGame);
                 }
                 else if(serverMessageType == ServerMessage.ServerMessageType.ERROR){
-                    Error error = new Gson().fromJson(message, Error.class);
-                    serverMessageHandler.error(error);
+                    var error = new Gson().fromJson(message, ErrorMessage.class);
+                    serverMessageHandler.errorMessage(error);
                 }
 
             }

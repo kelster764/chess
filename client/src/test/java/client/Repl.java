@@ -6,6 +6,7 @@ import exception.DataAccessException;
 import model.GameData;
 import ui.ChessPrint;
 import ui.ServerMessageHandler;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGame;
 import websocket.messages.Notification;
 import websocket.messages.ServerMessage;
@@ -75,6 +76,11 @@ public class Repl implements ServerMessageHandler {
 
     @Override
     public void error(Error error) {
+
+    }
+
+    @Override
+    public void errorMessage(ErrorMessage error) {
         String realMessage = error.getMessage();
         System.out.println(realMessage);
         printPrompt();

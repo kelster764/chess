@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 import websocket.commands.ChessMoveCommand;
-import websocket.messages.Error;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGame;
 import websocket.messages.Notification;
 import websocket.commands.UserGameCommand;
@@ -59,7 +59,7 @@ public class WebSocketHandler {
             Notification notification = new Notification(String.format("%s has joined", userName));
             connections.broadcast(gameData.gameID(), session, notification);
         }catch(Exception ex){
-            connections.broadcastToRoot(new Error("error:" + ex.getMessage()), session);   }
+            connections.broadcastToRoot(new ErrorMessage("error:" + ex.getMessage()), session);   }
     }
 
     private void move(GameData gameData, Session session, AuthData authData,String message) throws IOException {
@@ -95,17 +95,17 @@ public class WebSocketHandler {
                     connections.broadcast(gameData.gameID(), session, notification);
                 }
                 else{
-                    connections.broadcastToRoot(new Error("error: observer cannot move"), session);
+                    connections.broadcastToRoot(new ErrorMessage("error: observer cannot move"), session);
                 }
             }
             else{
-                connections.broadcastToRoot(new Error("error: game is already over"), session);
+                connections.broadcastToRoot(new ErrorMessage("error: game is already over"), session);
 
             }
 
 
         }catch(Exception ex){
-            connections.broadcastToRoot(new Error("error:" + ex.getMessage()), session);
+            connections.broadcastToRoot(new ErrorMessage("error:" + ex.getMessage()), session);
         }
         //server verifies the calidity of the move
         //Game is updated to represent the move. Game is updated in the database.
@@ -132,7 +132,7 @@ public class WebSocketHandler {
             Notification notification = new Notification(String.format("%s has left", authData.username()));
             connections.broadcast(gameID, session, notification);
         }catch(Exception ex){
-            connections.broadcastToRoot(new Error("error:" + ex.getMessage()), session);
+            connections.broadcastToRoot(new ErrorMessage("error:" + ex.getMessage()), session);
         }
 
         //var messageNotif = new Notification(Notification.Type.NOTIFICATION, String.format("%s has left", userName));
@@ -154,11 +154,11 @@ public class WebSocketHandler {
                 //connections.removeGame(gameID);
             }
             else{
-                connections.broadcastToRoot(new Error("error: cannot resign"), session);
+                connections.broadcastToRoot(new ErrorMessage("error: cannot resign"), session);
             }
 
         }catch(Exception ex){
-            connections.broadcastToRoot(new Error("error:" + ex.getMessage()), session);
+            connections.broadcastToRoot(new ErrorMessage("error:" + ex.getMessage()), session);
         }
         //connections.removeGame(gameID);
 
