@@ -57,8 +57,19 @@ public class WebSocketHandler {
 //        var messageNotif = new Notification(Notification.Type.NOTIFICATION, String.format("%s has joined", userName));
             var messageLoad = new LoadGame(gameData);
             connections.broadcastToRoot(messageLoad, session);
-            Notification notification = new Notification(String.format("%s has joined", userName));
-            connections.broadcast(gameData.gameID(), session, notification);
+
+            if(userName.equals(gameData.whiteUsername())){
+                Notification notification = new Notification(String.format("%s has joined as white", userName));
+                connections.broadcast(gameData.gameID(), session, notification);
+            }
+            else if(userName.equals(gameData.blackUsername())){
+                Notification notification = new Notification(String.format("%s has joined as black", userName));
+                connections.broadcast(gameData.gameID(), session, notification);
+            }
+            else {
+                Notification notification = new Notification(String.format("%s has joined as observer", userName));
+                connections.broadcast(gameData.gameID(), session, notification);
+            }
         }catch(Exception ex){
             connections.broadcastToRoot(new ErrorMessage("error:" + ex.getMessage()), session);   }
     }
