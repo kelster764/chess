@@ -80,7 +80,7 @@ public class UserClient {
             }
             else{
                 return switch (cmd) {
-                    //case "redraw" -> redrawBoard();
+                    case "redraw" -> redrawBoard();
                     case "leave" -> leave();
                     case "move" -> MakeMove(params);
                     case "resign" -> resign();
@@ -94,6 +94,16 @@ public class UserClient {
         }
     }
 
+    private String redrawBoard() throws DataAccessException {
+        Gson gson = new Gson();
+        GameData gameData = sv.getGame(gameID, authToken);
+        ChessGame chessGame = gameData.game();
+        String json = gson.toJson(chessGame);
+        ChessPrint chessPrint = new ChessPrint();
+        //System.out.println(String.format("game %d", game.gameID()));
+        chessPrint.main(new String[]{color, json});
+        return "board redrawn";
+    }
 
 
     private String quit() {
