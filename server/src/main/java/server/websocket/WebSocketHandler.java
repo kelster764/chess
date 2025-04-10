@@ -3,6 +3,7 @@ package server.websocket;
 
 import chess.ChessGame;
 import chess.ChessMove;
+import chess.ChessPosition;
 import com.google.gson.Gson;
 import dataaccess.AuthDAO;
 import model.AuthData;
@@ -62,6 +63,25 @@ public class WebSocketHandler {
             connections.broadcastToRoot(new ErrorMessage("error:" + ex.getMessage()), session);   }
     }
 
+    private String moveNotification(ChessMove chessMove, String userName){
+        ChessPosition startPos = chessMove.getStartPosition();
+        ChessPosition endPos = chessMove.getEndPosition();
+
+        int startRow = startPos.getRow();
+        int startCol = startPos.getColumn();
+        char colCharStart = (char) ('a' + startCol - 1);
+        String startPrint = colCharStart + Integer.toString(startRow);
+
+        int endRow = endPos.getRow();
+        int endCol = endPos.getColumn();
+        char colChar = (char) ('a' + endCol - 1);
+        String endPrint = colChar + Integer.toString(endRow);
+
+        String message = String.format("%s moved from %s to %s", userName,  startPrint, endPrint);
+        return message;
+    }
+
+
     private void move(GameData gameData, Session session, AuthData authData,String message) throws IOException {
         try{
             ChessMoveCommand chessMoveCommand = new Gson().fromJson(message, ChessMoveCommand.class);
@@ -117,8 +137,8 @@ public class WebSocketHandler {
                         connections.broadcast(gameData.gameID(), session, notification);
                         connections.broadcastToRoot(notification, session);
                     }
-
-                    Notification notification = new Notification("user made move");
+                    String moveMessage = moveNotification(chessMove, userName);
+                    Notification notification = new Notification(moveMessage);
                     connections.broadcast(gameData.gameID(), session, notification);
                 }
                 else{
