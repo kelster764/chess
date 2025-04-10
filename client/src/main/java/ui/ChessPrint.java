@@ -161,56 +161,7 @@ public class ChessPrint {
         }
         out.print(outPlayer);
     }
-//    private static void drawRowOfSquares(PrintStream out, int boardRow, ChessBoard chessBoard) {
-//        int colStart = Objects.equals(color, "WHITE") ? 1 : 8;
-//        int colEnd = Objects.equals(color, "WHITE") ? 8 : 1;
-//        int colStep = Objects.equals(color, "WHITE")  ? 1 : -1;
-//
-//        String rowLabel = String.format(" "+String.valueOf(String.valueOf(boardRow)+ " "));
-//        String[] blackPieces = {rowLabel,BLACK_ROOK,BLACK_KNIGHT,BLACK_BISHOP,BLACK_QUEEN,BLACK_KING,
-//                BLACK_BISHOP, BLACK_KNIGHT, BLACK_ROOK, rowLabel};
-//        String[] pawnPieces = {rowLabel,BLACK_PAWN,BLACK_PAWN,BLACK_PAWN,BLACK_PAWN,BLACK_PAWN,
-//                BLACK_PAWN, BLACK_PAWN, BLACK_PAWN, rowLabel};
-//        String[] blankPieces = {rowLabel,"   ","   ","   ","   ","   ",
-//                "   ", "   ", "   ", rowLabel};
-//                setMagenta(out);
-//                printPlayer(out, blackPieces[0], false);
-//                int startSquare = boardRow % 2;
-//            for (int boardCol = colStart; boardCol != colEnd + colStep; boardCol+= colStep) {
-//
-//                if (startSquare % 2 == 1 &&  Objects.equals(color, "WHITE")){
-//                    setGray(out);
-//                }
-//                else if (startSquare % 2 == 0 &&  Objects.equals(color, "BLACK")){
-//                    setGray(out);
-//                }
-//                else{
-//                    setWhite(out);
-//                }
-//                if(boardRow == 7){
-//                    printPlayer(out, pawnPieces[boardCol], false);
-//                }
-//                else if(boardRow == 8){
-//                    printPlayer(out, blackPieces[boardCol], false);
-//                }
-//                else if(boardRow == 1){
-//                    printPlayer(out, blackPieces[boardCol], true);
-//                }
-//                else if(boardRow == 2){
-//                    printPlayer(out, pawnPieces[boardCol], true);
-//                }
-//                else{
-//                    printPlayer(out, blankPieces[boardCol], false);
-//                }
-//
-//                startSquare++;
-//                }
-//        setMagenta(out);
-//        printPlayer(out, blackPieces[BOARD_SIZE_IN_SQUARES - 1], false);
-//            setDef(out);
-//
-//            out.println();
-//    }
+
 
     private static void drawHorizontalLine(PrintStream out) {
 

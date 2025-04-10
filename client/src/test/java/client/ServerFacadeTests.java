@@ -192,19 +192,19 @@ public class ServerFacadeTests {
         }
     }
 
-//    @Test
-//    public void getGameTest(){
-//        try{
-//            sv.clear();
-//            AuthData authData = sv.register("urmom", "ishot", "blah");
-//            GameData gameData = sv.createGame("bestGame", authData.authToken());
-//            GameData game = sv.getGame(gameData.gameID(), authData.authToken());
-//            assert gameData == game;
-//        }catch(Exception ex){
-//            ex.getMessage();
-//            Assertions.fail();
-//        }
-//    }
+    @Test
+    public void getGameTest(){
+        try{
+            sv.clear();
+            AuthData authData = sv.register("urmom", "ishot", "blah");
+            GameData gameData = sv.createGame("bestGame", authData.authToken());
+            GameData game = sv.getGame(gameData.gameID(), authData.authToken());
+            assert gameData == game;
+        }catch(Exception ex){
+            ex.getMessage();
+            Assertions.fail();
+        }
+    }
 
     @Test
     public void joinGameTest(){

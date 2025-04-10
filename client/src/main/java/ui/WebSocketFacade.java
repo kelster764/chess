@@ -43,19 +43,6 @@ public class WebSocketFacade extends Endpoint {
                     serverMessageHandler.error(error);
                 }
 
-
-                //recieves server message
-                // going to be load game, or notification, or error
-//                try {
-//                    switch (serverMessage.getServerMessageType()) {
-//                        cas -> connect(message);
-//                        //case MAKE_MOVE -> move(gameData, session, authData, message);
-//                        //case LEAVE -> leave(gameData, session, authData);
-//                        //case RESIGN -> resign(gameData, session, authData);
-//                    }
-//                }catch(Exception ex){
-//                    throw new RuntimeException(ex.getMessage());
-//                }
             }
         });
 
@@ -74,10 +61,6 @@ public class WebSocketFacade extends Endpoint {
     }
 
     public void connect(String message) throws DataAccessException, IOException {
-        //var userGameCommand = message;
-        //UserGameCommand userGameCommand = new Gson().fromJson(message, UserGameCommand.class);
-        //Notification notification = new Notification("user has joined");
-        //String serverMessage = new Gson().toJson(notification);
         this.session.getBasicRemote().sendText(message);
     }
 

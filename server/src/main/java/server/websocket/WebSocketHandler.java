@@ -41,10 +41,6 @@ public class WebSocketHandler {
 
         GameData gameData = gameDAO.getGame(userGameCommand.getGameID());
 
-        //GameData gameData = gameDAO.createGame(new Game);
-        //gameDAO.updateGame(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), new ChessGame());
-        //GameData dummyData = new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), new ChessGame());
-        String userName = "steve";
         switch (userGameCommand.getCommandType()){
             case CONNECT -> connect(gameData, session, authData);
             case MAKE_MOVE -> move(gameData, session, authData, message);
