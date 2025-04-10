@@ -16,6 +16,7 @@ import ui.ChessPrint;
 import server.websocket.WebSocketHandler;
 import ui.ServerMessageHandler;
 import ui.WebSocketFacade;
+import websocket.commands.ChessMoveCommand;
 import websocket.commands.UserGameCommand;
 //import org.eclipse.jetty.websocket.api.Session;
 
@@ -262,8 +263,8 @@ public class UserClient {
             chessMove = new ChessMove(startPosition, endPosition, chessPiece.getPieceType());
         }
         Gson gson = new Gson();
-        UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE, authToken, gameID);
-        String userJson = gson.toJson(userGameCommand);
+        ChessMoveCommand chessMoveCommand = new ChessMoveCommand(authToken, gameID, chessMove);
+        String userJson = gson.toJson(chessMoveCommand);
         ws.send(userJson);
         return "you have moved";
 
