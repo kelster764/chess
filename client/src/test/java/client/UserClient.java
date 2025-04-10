@@ -1,4 +1,8 @@
 package client;
+import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPiece;
+import chess.ChessPosition;
 import com.google.gson.Gson;
 import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
@@ -77,7 +81,7 @@ public class UserClient {
                 return switch (cmd) {
                     //case "redraw" -> redrawBoard();
                     case "leave" -> leave();
-                    //case "move" -> MakeMove();
+                    case "move" -> MakeMove(params);
                     case "resign" -> resign();
                     //case "highlight" -> highlight();
                     default -> help();
@@ -88,6 +92,8 @@ public class UserClient {
             return ex.getMessage();
         }
     }
+
+
 
     private String quit() {
         System.exit(0);
@@ -219,6 +225,47 @@ public class UserClient {
         return "you have resigned";
     }
 
+    private String MakeMove(String[] params) throws IOException {
+        String start = params[0];
+        String end = params[1];
+        String promotion = params[2];
+        ChessPiece chessPiece = null;
+
+        if(promotion.equalsIgnoreCase("queen")){
+            chessPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN);
+        }
+        else if(promotion.equalsIgnoreCase("bishop")){
+            chessPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP);
+        }
+        else if(promotion.equalsIgnoreCase("rook")){
+            chessPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
+        }
+        else if(promotion.equalsIgnoreCase("knight")){
+            chessPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
+        }
+
+
+        int startRow = start.charAt(0) - 'a';
+        int startCol = Character.getNumericValue(start.charAt(1));
+
+        int endRow = end.charAt(0) - 'a';
+        int endCol = Character.getNumericValue(end.charAt(1));
+
+        ChessPosition startPosition = new ChessPosition(startRow, startCol);
+        ChessPosition endPosition = new ChessPosition(endRow, endCol);
+
+        ChessMove chessMove = new ChessMove(startPosition, endPosition, null);
+        if(chessPiece != null){
+            chessMove = new ChessMove(startPosition, endPosition, chessPiece.getPieceType());
+        }
+        Gson gson = new Gson();
+        UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE, authToken, gameID);
+        String userJson = gson.toJson(userGameCommand);
+        ws.send(userJson);
+        return "you have moved";
+
+    }
+
 
 
 
@@ -238,7 +285,7 @@ public class UserClient {
             return """
                     redraw - to redraw board
                     leave - to leave game
-                    move - makeMove
+                    move <startSpot> <endSpot> - makeMove
                     resign - resign
                     highlight - highlight
                     """;
