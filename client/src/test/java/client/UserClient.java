@@ -91,22 +91,26 @@ public class UserClient {
     }
 
     private String highlight(String... params) throws DataAccessException {
-        Gson gson = new Gson();
-        GameData gameData = sv.getGame(gameID, authToken);
-        ChessGame chessGame = gameData.game();
+        try {
+            Gson gson = new Gson();
+            GameData gameData = sv.getGame(gameID, authToken);
+            ChessGame chessGame = gameData.game();
 
-        String position = params[0];
-        int startCol = position.charAt(0) - 'a' + 1;
-        int startRow = Character.getNumericValue(position.charAt(1));
+            String position = params[0];
+            int startCol = position.charAt(0) - 'a' + 1;
+            int startRow = Character.getNumericValue(position.charAt(1));
 
-        ChessPosition chessPosition = new ChessPosition(startRow, startCol);
+            ChessPosition chessPosition = new ChessPosition(startRow, startCol);
+            ChessPiece chessPiece = chessGame.getBoard().getPiece(chessPosition);
 
+            String json = gson.toJson(chessGame);
+            ChessPrint chessPrint = new ChessPrint();
+            chessPrint.main(new String[]{color, json, position});
 
-        String json = gson.toJson(chessGame);
-        ChessPrint chessPrint = new ChessPrint();
-        chessPrint.main(new String[]{color, json, });
-
-        return "board highlighted";
+            return "board highlighted";
+        }catch(Exception ex){
+            throw new DataAccessException("invalid position");
+        }
     }
 
     private String redrawBoard() throws DataAccessException {

@@ -1,15 +1,10 @@
 package ui;
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.*;
 import com.google.gson.Gson;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Objects;
+import java.util.*;
 
 import static ui.EscapeSequences.*;
 
@@ -29,31 +24,56 @@ public class ChessPrint {
     public static String color = "WHITE";
     public static ChessGame chess = new ChessGame();
     public static ChessBoard chessBoard = new ChessBoard();
+    //public static Collection<ChessMove> validMoves;
+    public static Collection<ChessPosition> highLightPositions = new ArrayList<>();
 
 
     public static void main(String[] args) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
         out.print(ERASE_SCREEN);
+        highLightPositions = new ArrayList<>();
 
-        if(args.length > 0){
-            if (args[0].equalsIgnoreCase("black")){
-                color = "BLACK";
-            }
-            else{
-                color = "WHITE";
-            }
-            String chessJson = args[1];
-            chess = new Gson().fromJson(chessJson, ChessGame.class);
-            //ChessGame chess = new ChessGame();
-            chessBoard = chess.getBoard();
+        if (args[0].equalsIgnoreCase("black")){
+            color = "BLACK";
         }
+        else{
+            color = "WHITE";
+        }
+        String chessJson = args[1];
+        chess = new Gson().fromJson(chessJson, ChessGame.class);
+        //ChessGame chess = new ChessGame();
+        chessBoard = chess.getBoard();
+
+
+
+        Collection<ChessMove> validMoves;
+        //Collection<ChessPosition> highLight = new ArrayList<>();
+        if(args.length >2 ){
+            String position = args[2];
+            int startCol = position.charAt(0) - 'a' + 1;
+            int startRow = Character.getNumericValue(position.charAt(1));
+
+            ChessPosition chessPosition = new ChessPosition(startRow, startCol);
+            validMoves = chess.validMoves(chessPosition);
+            for(ChessMove move : validMoves){
+                ChessPosition endPosition = move.getEndPosition();
+                highLightPositions.add(endPosition);
+            }
+
+        }
+
 
         drawHeaders(out);
 
         drawChessBoard(out);
 
         drawHeaders(out);
+    }
+
+    private static ChessPosition convertToPosition(int row, int col){
+        ChessPosition chessPosition = new ChessPosition(row, col);
+        return chessPosition;
     }
 
 
@@ -117,6 +137,10 @@ public class ChessPrint {
                 else{
                     setWhite(out);
                 }
+
+             if(highLightPositions.contains(chessPosition)){
+                 setYellow(out);
+             }
             if(chessPiece != null) {
                 printPlayer(out, chessPiece.getPieceType().toString(), chessPiece.getTeamColor());
             }
@@ -189,6 +213,10 @@ public class ChessPrint {
     private static void setGray(PrintStream out) {
         out.print(SET_BG_COLOR_LIGHT_GREY);
         out.print(SET_TEXT_COLOR_WHITE);
+    }
+
+    private static void setYellow(PrintStream out){
+        out.print(SET_BG_COLOR_YELLOW);
     }
 
     private static void setRed(PrintStream out) {
