@@ -75,7 +75,7 @@ public class WebSocketHandler {
             boolean isTurnBlack = Objects.equals(userName, gameData.blackUsername()) && chessGame.color == ChessGame.TeamColor.BLACK;
             boolean isNotObserver = Objects.equals(userName, gameData.whiteUsername()) || Objects.equals(userName, gameData.blackUsername());
             ChessMove chessMove = chessMoveCommand.getMove();
-            if(!chessGame.isGameOver() && (isTurnBlack || isTurnWhite)) {
+            if((!chessGame.isGameOver() && (isTurnBlack || isTurnWhite)) || !isNotObserver) {
                 if(isNotObserver) {
                     chessGame.makeMove(chessMove);
                     gameDAO.updateGame(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), chessGame);
@@ -99,7 +99,12 @@ public class WebSocketHandler {
                 }
             }
             else{
-                connections.broadcastToRoot(new ErrorMessage("error: game is already over"), session);
+                if(chessGame.isGameOver()) {
+                    connections.broadcastToRoot(new ErrorMessage("error: game is already over"), session);
+                }
+                else{
+                    connections.broadcastToRoot(new ErrorMessage("error: not your turn"), session);
+                }
 
             }
 
