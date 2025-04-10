@@ -21,17 +21,11 @@ public class ConnectionManager {
     public final ConcurrentHashMap<Integer, Map<Session, String>> sessionMap = new ConcurrentHashMap<>();
 
     public void addSessionToGame(Integer gameID, Session session, String userName) {
-//        Set<Session>currentSet = sessionMap.getOrDefault(gameID, Map.of());
-//        currentSet.add(session);
-//        sessionMap.put(gameID, currentSet);
         sessionMap.putIfAbsent(gameID, new ConcurrentHashMap<>());
         sessionMap.get(gameID).put(session, userName);
     }
 
     public void removeSessionFromGame(Integer gameID, Session session) {
-//        Set<Session>currentSet = sessionMap.getOrDefault(gameID, Set.of());
-//        currentSet.remove(session);
-//        sessionMap.put(gameID, currentSet);
         if (sessionMap.containsKey(gameID)) {
             sessionMap.get(gameID).remove(session);
             if (sessionMap.isEmpty()) {

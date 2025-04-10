@@ -64,12 +64,6 @@ public class WebSocketHandler {
             connections.broadcast(gameData.gameID(), session, notification);
         }catch(Exception ex){
             connections.broadcastToRoot(new Error("error:" + ex.getMessage()), session);   }
-
-//        if(authData.username() == null){
-//            connections.broadcastToRoot(new Error("error: not authenticated"), session);
-//        }
-
-//        connections.broadcastConnect(gameData.gameID(), session, messageNotif);
     }
 
     private void move(GameData gameData, Session session, AuthData authData,String message) throws IOException {

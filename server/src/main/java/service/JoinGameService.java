@@ -36,22 +36,10 @@ public class JoinGameService {
         }
 
         if(color.equals("WHITE")) {
-//            if(game.game() == null){
-//                gameDao.updateGame(gameID, authData.username(), game.blackUsername(), game.gameName(), new ChessGame());
-//            }
-//            else {
-                gameDao.updateGame(gameID, authData.username(), game.blackUsername(), game.gameName(), game.game());
-//            }
+            gameDao.updateGame(gameID, authData.username(), game.blackUsername(), game.gameName(), game.game());
         }
         if(color.equals("BLACK")) {
-//            if(game.game() == null){
-//                gameDao.updateGame(gameID, game.whiteUsername(), authData.username(), game.gameName(), new ChessGame());
-//            }
-
             gameDao.updateGame(gameID, game.whiteUsername(), authData.username(), game.gameName(), game.game());
         }
-//        if(game.game() == null) {
-//            gameDao.updateGame(gameID, game.whiteUsername(), game.blackUsername(), game.gameName(), new ChessGame());
-//        }
     }
 }

@@ -87,9 +87,6 @@ public void updateGame(int gameID, String whiteUsername, String blackUsername, S
             var gameName = rs.getString("gameName");
             var json = rs.getString("game");
             var game = new Gson().fromJson(json, ChessGame.class);
-//            if(game == null){
-//                game = new ChessGame();
-//            }
             var read = new GameData(gameID, whiteUsername, blackUsername, gameName, game);
             return read;
         }catch (Exception e) {
