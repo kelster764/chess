@@ -74,6 +74,13 @@ public class UserClient {
                     default -> help();
                 };
             }
+            else if (state == State.RESIGN){
+                return switch (cmd) {
+                    case "yes" -> resignReal();
+                    case "no" -> redrawBoard();
+                    default -> help();
+                };
+            }
             else{
                 return switch (cmd) {
                     case "redraw" -> redrawBoard();
@@ -114,6 +121,7 @@ public class UserClient {
     }
 
     private String redrawBoard() throws DataAccessException {
+        state = State.GAMEMODE;
         Gson gson = new Gson();
         GameData gameData = sv.getGame(gameID, authToken);
         ChessGame chessGame = gameData.game();
@@ -248,55 +256,69 @@ public class UserClient {
     }
 
     public String resign() throws DataAccessException, IOException {
-        Gson gson = new Gson();
-        UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID);
-        String userJson = gson.toJson(userGameCommand);
-        ws.send(userJson);
-        state = State.LOGGEDIN;
-        return "you have resigned";
+        state = State.RESIGN;
+        return "are you sure you want to resign?";
     }
 
-    private String makeMove(String[] params) throws IOException {
-        String start = params[0];
-        String end = params[1];
-        String promotion = null;
-        if(params.length > 2) {
-            promotion = params[2];
-        }
-        ChessPiece chessPiece = null;
+    public String resignReal(String... params) throws DataAccessException, IOException {
+            Gson gson = new Gson();
+            UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID);
+            String userJson = gson.toJson(userGameCommand);
+            ws.send(userJson);
+            state = State.LOGGEDIN;
+            return "you have resigned";
+    }
 
-        if(promotion != null) {
-            if (promotion.equalsIgnoreCase("queen")) {
-                chessPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN);
-            } else if (promotion.equalsIgnoreCase("bishop")) {
-                chessPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP);
-            } else if (promotion.equalsIgnoreCase("rook")) {
-                chessPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
-            } else if (promotion.equalsIgnoreCase("knight")) {
-                chessPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
+    private String makeMove(String[] params) throws IOException, DataAccessException {
+        if (params.length == 2) {
+            try {
+                String start = params[0];
+                String end = params[1];
+                String promotion = null;
+                if (params.length > 2) {
+                    promotion = params[2];
+                }
+                ChessPiece chessPiece = null;
+
+                if (promotion != null) {
+                    if (promotion.equalsIgnoreCase("queen")) {
+                        chessPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN);
+                    } else if (promotion.equalsIgnoreCase("bishop")) {
+                        chessPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP);
+                    } else if (promotion.equalsIgnoreCase("rook")) {
+                        chessPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
+                    } else if (promotion.equalsIgnoreCase("knight")) {
+                        chessPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
+                    }
+                }
+
+
+                int startCol = start.charAt(0) - 'a' + 1;
+                int startRow = Character.getNumericValue(start.charAt(1));
+
+                int endCol = end.charAt(0) - 'a' + 1;
+                int endRow = Character.getNumericValue(end.charAt(1));
+
+                ChessPosition startPosition = new ChessPosition(startRow, startCol);
+                ChessPosition endPosition = new ChessPosition(endRow, endCol);
+
+                ChessMove chessMove = new ChessMove(startPosition, endPosition, null);
+                if (chessPiece != null) {
+                    chessMove = new ChessMove(startPosition, endPosition, chessPiece.getPieceType());
+                }
+                Gson gson = new Gson();
+                ChessMoveCommand chessMoveCommand = new ChessMoveCommand(authToken, gameID, chessMove);
+                String userJson = gson.toJson(chessMoveCommand);
+                ws.send(userJson);
+                return "";
+            } catch (Exception ex) {
+                throw new DataAccessException("invalid move");
             }
+
         }
-
-
-        int startCol = start.charAt(0) - 'a' + 1;
-        int startRow = Character.getNumericValue(start.charAt(1));
-
-        int endCol = end.charAt(0) - 'a' + 1;
-        int endRow = Character.getNumericValue(end.charAt(1));
-
-        ChessPosition startPosition = new ChessPosition(startRow, startCol);
-        ChessPosition endPosition = new ChessPosition(endRow, endCol);
-
-        ChessMove chessMove = new ChessMove(startPosition, endPosition, null);
-        if(chessPiece != null){
-            chessMove = new ChessMove(startPosition, endPosition, chessPiece.getPieceType());
+        else{
+            throw new DataAccessException("invalid move");
         }
-        Gson gson = new Gson();
-        ChessMoveCommand chessMoveCommand = new ChessMoveCommand(authToken, gameID, chessMove);
-        String userJson = gson.toJson(chessMoveCommand);
-        ws.send(userJson);
-        return "";
-
     }
 
 
@@ -321,6 +343,11 @@ public class UserClient {
                     move <startSpot> <endSpot> - makeMove
                     resign - resign
                     highlight <chess postion> - highlight valid moves
+                    """;
+        }
+        if (state == State.RESIGN) {
+            return """
+                    Resign? Type YES or NO
                     """;
         }
 
