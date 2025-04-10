@@ -33,6 +33,7 @@ public class UserClient {
     private WebSocketFacade ws;
     public static State state = State.LOGGEDOUT;
     public String color;
+    public int gameID;
     public static GameDAO gameDAO;
     public static AuthDAO authDAO;
 
@@ -44,6 +45,7 @@ public class UserClient {
         ws = new WebSocketFacade(serverUrl, repl);
         this.serverUrl = serverUrl;
         this.color = "white";
+        this.gameID = gameID;
     }
 
     public String eval(String input){
@@ -74,7 +76,7 @@ public class UserClient {
             else{
                 return switch (cmd) {
                     //case "redraw" -> redrawBoard();
-                    //case "leave" -> leave(params);
+                    case "leave" -> leave();
                     //case "move" -> MakeMove();
                     //case "resign" -> resign();
                     //case "highlight" -> highlight();
@@ -92,24 +94,6 @@ public class UserClient {
         return "";
     }
 
-    private String observe(String... params) throws DataAccessException, IOException {
-        color = "white";
-        Gson gson = new Gson();
-        int gameID = Integer.parseInt(params[0]);
-        //GameData gameData = sv.getGame(gameID, authToken);
-        state = State.GAMEMODE;
-        UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
-        String userJson = gson.toJson(userGameCommand);
-        ws.send(userJson);
-
-        //ws.onMessage(serverUrl, userGameCommand);
-
-
-//        String json = gson.toJson(gameData);
-//        ChessPrint chessBoard = new ChessPrint();
-//        chessBoard.main(new String[]{"white", json});
-        return "Board displayed";
-    }
 
     public String register(String... params) throws DataAccessException{
         if (params.length == 3){
@@ -154,6 +138,17 @@ public class UserClient {
         return "Goodbye!";
     }
 
+    public String list() throws DataAccessException{
+        assertSignedIn();
+        var games = sv.listGames(authToken);
+        var result = new StringBuilder();
+        var gson = new Gson();
+        for (var game : games) {
+            result.append(gson.toJson(game)).append('\n');
+        }
+        return result.toString();
+    }
+
     public String create(String... params) throws DataAccessException{
         assertSignedIn();
         if (params.length == 1) {
@@ -169,27 +164,31 @@ public class UserClient {
         throw new DataAccessException("Expected gameName");
     }
 
+    private String observe(String... params) throws DataAccessException, IOException {
+        color = "white";
+        Gson gson = new Gson();
+        gameID = Integer.parseInt(params[0]);
+        //GameData gameData = sv.getGame(gameID, authToken);
+        state = State.GAMEMODE;
+        UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
+        String userJson = gson.toJson(userGameCommand);
+        ws.send(userJson);
+        return "Board displayed";
+    }
+
+
     public String join(String... params) throws DataAccessException{
         assertSignedIn();
         if (params.length == 2) {
             try {
                 Gson gson = new Gson();
-                String gameColor = params[1].toUpperCase();
+                color =  params[1].toUpperCase();
+                gameID = Integer.parseInt(params[0]);
 
-                int gameID = Integer.parseInt(params[0]);
-                sv.joinGame(gameID, gameColor, authToken);
-
-                GameData gameData = sv.getGame(gameID, authToken);
-
-                //String userJson = gson.toJson(userGameCommand);
-
-                //ws.onMessage(serverUrl, userGameCommand);
-
-
-                String json = gson.toJson(gameData);
-                ChessPrint chessBoard = new ChessPrint();
-                chessBoard.main(new String[]{gameColor, json});
-
+                sv.joinGame(gameID, color, authToken);
+                UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
+                String userJson = gson.toJson(userGameCommand);
+                ws.send(userJson);
                 state = State.GAMEMODE;
 
                 return "play!";
@@ -202,18 +201,17 @@ public class UserClient {
         throw new DataAccessException("Expected number and color");
     }
 
-
-
-    public String list() throws DataAccessException{
-        assertSignedIn();
-        var games = sv.listGames(authToken);
-        var result = new StringBuilder();
-        var gson = new Gson();
-        for (var game : games) {
-            result.append(gson.toJson(game)).append('\n');
-        }
-        return result.toString();
+    public String leave() throws DataAccessException, IOException {
+        Gson gson = new Gson();
+        UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID);
+        String userJson = gson.toJson(userGameCommand);
+        ws.send(userJson);
+        state = State.LOGGEDIN;
+        return "you have left game";
     }
+
+
+
 
     //put list here g
 
