@@ -80,7 +80,7 @@ public class UserClient {
                     case "leave" -> leave();
                     case "move" -> makeMove(params);
                     case "resign" -> resign();
-                    //case "highlight" -> highlight();
+                    case "highlight" -> highlight(params);
                     default -> help();
                 };
             }
@@ -88,6 +88,25 @@ public class UserClient {
         }catch(Exception ex) {
             return ex.getMessage();
         }
+    }
+
+    private String highlight(String... params) throws DataAccessException {
+        Gson gson = new Gson();
+        GameData gameData = sv.getGame(gameID, authToken);
+        ChessGame chessGame = gameData.game();
+
+        String position = params[0];
+        int startCol = position.charAt(0) - 'a' + 1;
+        int startRow = Character.getNumericValue(position.charAt(1));
+
+        ChessPosition chessPosition = new ChessPosition(startRow, startCol);
+
+
+        String json = gson.toJson(chessGame);
+        ChessPrint chessPrint = new ChessPrint();
+        chessPrint.main(new String[]{color, json, });
+
+        return "board highlighted";
     }
 
     private String redrawBoard() throws DataAccessException {
