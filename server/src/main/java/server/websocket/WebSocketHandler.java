@@ -83,14 +83,41 @@ public class WebSocketHandler {
                     LoadGame loadGame = new LoadGame(updatedGame);
                     connections.broadcastToRoot(loadGame, session);
                     connections.broadcast(gameData.gameID(), session, loadGame);
-                    if (chessGame.isInCheck(chessGame.color) ||
-                            chessGame.isInCheckmate(chessGame.color) ||
-                            chessGame.isInStalemate(chessGame.color)) {
-                        Notification notification = new Notification("user is in trouble");
+
+                    if(chessGame.isInCheck(chessGame.color)){
+                        Notification notification;
+                        if(chessGame.color == ChessGame.TeamColor.WHITE){
+                            notification = new Notification(String.format("%s is in check", updatedGame.whiteUsername()));
+                        }
+                        else{
+                            notification = new Notification(String.format("%s is in check", updatedGame.blackUsername()));
+                        }
                         connections.broadcast(gameData.gameID(), session, notification);
                         connections.broadcastToRoot(notification, session);
-
                     }
+                    if(chessGame.isInCheckmate(chessGame.color)){
+                        Notification notification;
+                        if(chessGame.color == ChessGame.TeamColor.WHITE){
+                            notification = new Notification(String.format("%s is in checkmate", updatedGame.whiteUsername()));
+                        }
+                        else{
+                            notification = new Notification(String.format("%s is in checkmate", updatedGame.blackUsername()));
+                        }
+                        connections.broadcast(gameData.gameID(), session, notification);
+                        connections.broadcastToRoot(notification, session);
+                    }
+                    else if(chessGame.isInStalemate(chessGame.color)){
+                        Notification notification;
+                        if(chessGame.color == ChessGame.TeamColor.WHITE){
+                            notification = new Notification(String.format("%s is in stalemate", updatedGame.whiteUsername()));
+                        }
+                        else{
+                            notification = new Notification(String.format("%s is in stalemate", updatedGame.blackUsername()));
+                        }
+                        connections.broadcast(gameData.gameID(), session, notification);
+                        connections.broadcastToRoot(notification, session);
+                    }
+
                     Notification notification = new Notification("user made move");
                     connections.broadcast(gameData.gameID(), session, notification);
                 }
