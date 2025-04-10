@@ -11,16 +11,12 @@ import model.AuthData;
 import model.GameData;
 import server.Server;
 import server.ServerFacade;
-import server.websocket.WebSocketHandler;
 import ui.ChessPrint;
-import server.websocket.WebSocketHandler;
-import ui.ServerMessageHandler;
 import ui.WebSocketFacade;
 import websocket.commands.ChessMoveCommand;
 import websocket.commands.UserGameCommand;
 //import org.eclipse.jetty.websocket.api.Session;
 
-import javax.imageio.IIOException;
 import javax.websocket.DeploymentException;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -82,7 +78,7 @@ public class UserClient {
                 return switch (cmd) {
                     case "redraw" -> redrawBoard();
                     case "leave" -> leave();
-                    case "move" -> MakeMove(params);
+                    case "move" -> makeMove(params);
                     case "resign" -> resign();
                     //case "highlight" -> highlight();
                     default -> help();
@@ -237,7 +233,7 @@ public class UserClient {
         return "you have resigned";
     }
 
-    private String MakeMove(String[] params) throws IOException {
+    private String makeMove(String[] params) throws IOException {
         String start = params[0];
         String end = params[1];
         String promotion = null;

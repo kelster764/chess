@@ -140,26 +140,26 @@ public class ChessPrint {
         }else {
             out.print(SET_TEXT_COLOR_BLACK);
         }
-        String out_player = player;
+        String outPlayer = player;
         if(Objects.equals(player, "KING")){
-            out_player = KING;
+            outPlayer = KING;
         }
         else if(Objects.equals(player, "QUEEN")){
-            out_player = QUEEN;
+            outPlayer = QUEEN;
         }
         else if(Objects.equals(player, "BISHOP")){
-            out_player = BISHOP;
+            outPlayer = BISHOP;
         }
         else if(Objects.equals(player, "KNIGHT")){
-            out_player = KNIGHT;
+            outPlayer = KNIGHT;
         }
         else if(Objects.equals(player, "ROOK")){
-            out_player = ROOK;
+            outPlayer = ROOK;
         }
         else if(Objects.equals(player, "PAWN")){
-            out_player = PAWN;
+            outPlayer = PAWN;
         }
-        out.print(out_player);
+        out.print(outPlayer);
     }
 //    private static void drawRowOfSquares(PrintStream out, int boardRow, ChessBoard chessBoard) {
 //        int colStart = Objects.equals(color, "WHITE") ? 1 : 8;

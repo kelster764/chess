@@ -187,7 +187,7 @@ public class ChessGame {
         return !isInCheck(teamColor) && validmoves.isEmpty();
     }
 
-    public void Resign(){
+    public void resign(){
         gameOver = true;
     }
 

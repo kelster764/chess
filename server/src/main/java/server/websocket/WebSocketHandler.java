@@ -5,7 +5,6 @@ import chess.ChessGame;
 import chess.ChessMove;
 import com.google.gson.Gson;
 import dataaccess.AuthDAO;
-import dataaccess.MySqlAuthAccess;
 import model.AuthData;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
@@ -19,7 +18,6 @@ import websocket.commands.ChessMoveCommand;
 import websocket.messages.Error;
 import websocket.messages.LoadGame;
 import websocket.messages.Notification;
-import websocket.messages.ServerMessage;
 import websocket.commands.UserGameCommand;
 import dataaccess.*;
 
@@ -91,8 +89,8 @@ public class WebSocketHandler {
                 if(isNotObserver) {
                     chessGame.makeMove(chessMove);
                     gameDAO.updateGame(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), chessGame);
-                    GameData updated_game = gameDAO.getGame(gameData.gameID());
-                    LoadGame loadGame = new LoadGame(updated_game);
+                    GameData updatedGame = gameDAO.getGame(gameData.gameID());
+                    LoadGame loadGame = new LoadGame(updatedGame);
                     connections.broadcastToRoot(loadGame, session);
                     connections.broadcast(gameData.gameID(), session, loadGame);
                     if (chessGame.isInCheck(chessGame.color) || chessGame.isInCheckmate(chessGame.color) || chessGame.isInStalemate(chessGame.color)) {
@@ -156,7 +154,7 @@ public class WebSocketHandler {
             String userName = authData.username();
             boolean isNotObserver = Objects.equals(userName, gameData.whiteUsername()) || Objects.equals(userName, gameData.blackUsername());
             if(!chessGame.isGameOver() && isNotObserver) {
-                chessGame.Resign();
+                chessGame.resign();
                 gameDAO.updateGame(gameID, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), chessGame);
                 Notification notification = new Notification(String.format("%s has resigned", authData.username()));
                 connections.broadcast(gameID, session, notification);
