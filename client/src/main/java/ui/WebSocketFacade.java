@@ -16,7 +16,8 @@ public class WebSocketFacade extends Endpoint {
     Session session;
     ServerMessageHandler serverMessageHandler;
 
-    public WebSocketFacade(String url, ServerMessageHandler serverMessageHandler) throws DataAccessException, URISyntaxException, DeploymentException, IOException {
+    public WebSocketFacade(String url, ServerMessageHandler serverMessageHandler)
+            throws DataAccessException, URISyntaxException, DeploymentException, IOException {
         url = url.replace("http", "ws");
         URI socketURI = new URI(url + "/ws");
 

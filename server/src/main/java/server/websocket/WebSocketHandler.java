@@ -83,7 +83,9 @@ public class WebSocketHandler {
                     LoadGame loadGame = new LoadGame(updatedGame);
                     connections.broadcastToRoot(loadGame, session);
                     connections.broadcast(gameData.gameID(), session, loadGame);
-                    if (chessGame.isInCheck(chessGame.color) || chessGame.isInCheckmate(chessGame.color) || chessGame.isInStalemate(chessGame.color)) {
+                    if (chessGame.isInCheck(chessGame.color) ||
+                            chessGame.isInCheckmate(chessGame.color) ||
+                            chessGame.isInStalemate(chessGame.color)) {
                         Notification notification = new Notification("user is in trouble");
                         connections.broadcast(gameData.gameID(), session, notification);
                         connections.broadcastToRoot(notification, session);
