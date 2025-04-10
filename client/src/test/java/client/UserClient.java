@@ -320,7 +320,7 @@ public class UserClient {
                     leave - to leave game
                     move <startSpot> <endSpot> - makeMove
                     resign - resign
-                    highlight - highlight
+                    highlight <chess postion> - highlight valid moves
                     """;
         }
 
